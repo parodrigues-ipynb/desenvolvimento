@@ -116,27 +116,30 @@ Uma imagem em alta resolução do esquemático pode ser vista [aqui](https://i.i
 
 Algumas notas sobre decisões feitas foram colocadas abaixo.
 
-#### Capacitores de desacoplamento de 100nF nos terminais dos motores A e B
+<details>
+  <summary>Capacitores de desacoplamento de 100nF nos terminais dos motores A e B</summary>
 
-![Motores escovados](https://i.imgur.com/eeTXd8O.jpeg)
-
-Motores produzem ruído.
-
-No contexto do B1-M1, "ruído" é entendido como as ondas eletromagnéticas emitidas por um dispositivo durante seu funcionamento afetarem o funcionamento de outros dispositivos eletrônicos.
-
-Ruído é um problema difícil de resolver, pois fisicamente eles são uma forma de energia eletromagnética - que também é a descrição para sinais elétricos. Assim, como distinguir sinais de ruídos? A energia eletromagnética que é essencial para o funcionamento de um sistema pode ser a causa de ruído indesejado para outro.
-
-Nos motores DC utilizados neste projeto, uma das fontes de ruído possíveis é devido à comutação entre as escovas de carbono e o anel coletor laminado (o comutador) do induzido.
-
-[GIF mostrando os arcos voltaicos](https://i.imgur.com/fCO2iG0.gif)
-
-Quando as escovas e as lâminas do anel coletor comutam ocorrem arcos voltaicos (*comutar = ligar ou desligar, interromper e religar uma ligação elétrica*). Esses arcos ocorrem pois uma vez energizadas as bobinas do enrolamento do induzido se comportam como indutores.
-
-A equação da tensão para indutores é $v = L \frac{di}{dt}$. Ou seja, a tensão é proporcional à taxa de variação da corrente. Quando a comutação ocorre, a taxa de variação da corrente é abrupta e intensa (indo de 100% para 0% em um intervalo de tempo muito pequeno). Essa grande taxa de variação provoca um pico de tensão nas bobinas e, por consequência, os arcos voltaicos entre as escovas e as lâminas do anel coletor. Os picos de tensão no funcionamento de um motor DC podem ser vistos na imagem abaixo.
-
-![Ruído](https://i.imgur.com/xDD7Uay.jpeg)
-
-O objetivo dos capacitores próximos aos terminais do motor é de suprimir um pouco esses picos de tensão gerados pela comutação das escovas e das lâminas do coletor.
+  ![Motores escovados](https://i.imgur.com/eeTXd8O.jpeg)
+  
+  Motores produzem ruído.
+  
+  No contexto do B1-M1, "ruído" é entendido como as ondas eletromagnéticas emitidas por um dispositivo durante seu funcionamento afetarem o funcionamento de outros dispositivos eletrônicos.
+  
+  Ruído é um problema difícil de resolver, pois fisicamente eles são uma forma de energia eletromagnética - que também é a descrição para sinais elétricos. Assim, como distinguir sinais de ruídos? A energia eletromagnética que é essencial para o funcionamento de um sistema pode ser a causa de ruído indesejado para outro.
+  
+  Nos motores DC utilizados neste projeto, uma das fontes de ruído possíveis é devido à comutação entre as escovas de carbono e o anel coletor laminado (o comutador) do induzido.
+  
+  [GIF mostrando os arcos voltaicos](https://i.imgur.com/fCO2iG0.gif)
+  
+  Quando as escovas e as lâminas do anel coletor comutam ocorrem arcos voltaicos (*comutar = ligar ou desligar, interromper e religar uma ligação elétrica*). Esses arcos ocorrem pois uma vez energizadas as bobinas do enrolamento do induzido se comportam como indutores.
+  
+  A equação da tensão para indutores é $v = L \frac{di}{dt}$. Ou seja, a tensão é proporcional à taxa de variação da corrente. Quando a comutação ocorre, a taxa de variação da corrente é abrupta e intensa (indo de 100% para 0% em um intervalo de tempo muito pequeno). Essa grande taxa de variação provoca um pico de tensão nas bobinas e, por consequência, os arcos voltaicos entre as escovas e as lâminas do anel coletor. Os picos de tensão no funcionamento de um motor DC podem ser vistos na imagem abaixo.
+  
+  ![Ruído](https://i.imgur.com/xDD7Uay.jpeg)
+  
+  O objetivo dos capacitores próximos aos terminais do motor é de suprimir um pouco esses picos de tensão gerados pela comutação das escovas e das lâminas do coletor.
+  
+</details>
 
 ---
 
