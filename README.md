@@ -24,7 +24,9 @@ O B1-M1 é um robô de monitoramento.
 
 ### Relação de componentes utilizados
 
-Os componentes utilizados foram listados abaixo. Houve uma infinidade de terminais, parafusos, porcas, brocas, fixadores, cabos, espaçadores... além da estrutura MDF que não foi listada, já que a estutura atual do B1-M1 é apenas um protótipo.
+Nesta seção estão listados os componentes utilizados.
+
+Houve uma infinidade de terminais, parafusos, porcas, brocas, fixadores, cabos, espaçadores... além da estrutura MDF que não foi listada, já que a estutura atual do B1-M1 é apenas um protótipo.
 
 <details>
   <summary>📝 Relação de componentes</summary>
@@ -56,46 +58,53 @@ Os componentes utilizados foram listados abaixo. Houve uma infinidade de termina
 ---
 
 ### Memorial de cálculo de dimensionamento
-O grupo pretende alcançar os seguintes objetivos para o robô B1-M1:
-1. mover-se seguindo uma rotina pré-determinada em um ambiente residencial plano e permitir controle remoto;
-2. registrar valores obtidos pelo sensoriamento ultrassônico e visual (fotografias) e permitir o stream (vídeo) durante o acesso remoto;
-3. comunicar-se com o Gemini através da API fornecida pelo Google a fim de obter instruções para movimento autônomo.
 
-Para alcançar os objetivos acima listados foi determinada a necessidade dos componentes listados na seção [Relação de componentes utilizados](#relacao-de-componentes-utilizados).
+Nesta seção estão  registrados a metodologia e os cálculos utilizados para dimensionamento dos componentes do B1-M1.
 
-Como a alimentação elétrica é a espinha dorsal de todo projeto de eletrônica embarcada, o primeiro passo dado pelo grupo foi estimar o consumo de corrente dos componentes utilizados para atingir os objetivos.
+<details>
+  <summary>📝 Memorial</summary>
 
-#### Consumo de corrente
-
-| Componente                        | Quantidade  | Consumo total | 
-|-----------------------------------|:-----------:|:-------------:|
-| ESP32S-NodeMCU                    | 1           | ~250mA[^1]    |
-| ESP32-CAM                         | 1           | ~250mA[^2]    |
-| Sensor ultrassônico HC-SR04       | 1           | ~15mA         |
-| Driver motor TB6612FNG            | 1           | ~1,5mA        |
-| Motor DC 3-6V 200RPM              | 2           | ~400mA[^3]    |
-| Sensor de velocidade LM393        | 2           | ~20mA         |
-| **Total**                         | **8**       | **~936,5mA**  |
-
-Para fins de cálculo, arredondar-se-á o consumo total para 1A (1000mA).
-
-#### Autonomia
-
-![18650](https://i.imgur.com/sR7YUmA.jpeg)
-
-As baterias de lítio 18650 têm gravado nos seus invólucros a capacidade de carga elétrica de **3800mAh**. Porém, [é interessante notar que o vendedor fez testes e alegou a capacidade de apenas 1500mAh](https://www.usinainfo.com.br/baterias/bateria-18650-litio-recarregavel-37v-3800mah-flat-top-8760.html). Portanto, para fins de cálculo neste trabalho, adotar-se-á o valor de **1500mAh**.
-
-Fazendo um cálculo simples de autonomia,
-
-$Autonomia = \frac{Capacidade \ de \ carga \ elétrica}{Consumo \ de \ corrente \ elétrica} = \frac{1500mAh}{1000mA} ≈ 1,5h$
-
-Logo, o grupo espera que o B1-M1 tenha uma autonomia de aproximadamente **1 hora e 30 minutos** funcionando com as premissas de consumo feitas na tabela **Consumo de corrente**.
-
-#### Seção dos cabos utilizados
-
-Como cabos de bitola 1mm² suportam correntes contínuas de até 10A, adotou-se o seu uso nas conexões do pack de baterias 18650 com a BMS e da BMS com os reguladores de tensão.
-
-Nas demais conexões utilizou-se cabos de 0,75mm², que suportam correntes contínuas de até 8A.
+  O grupo pretende alcançar os seguintes objetivos para o robô B1-M1:
+  1. mover-se seguindo uma rotina pré-determinada em um ambiente residencial plano e permitir controle remoto;
+  2. registrar valores obtidos pelo sensoriamento ultrassônico e visual (fotografias) e permitir o stream (vídeo) durante o acesso remoto;
+  3. comunicar-se com o Gemini através da API fornecida pelo Google a fim de obter instruções para movimento autônomo.
+  
+  Para alcançar os objetivos acima listados foi determinada a necessidade dos componentes listados na seção [Relação de componentes utilizados](#relacao-de-componentes-utilizados).
+  
+  Como a alimentação elétrica é a espinha dorsal de todo projeto de eletrônica embarcada, o primeiro passo dado pelo grupo foi estimar o consumo de corrente dos componentes utilizados para atingir os objetivos.
+  
+  #### Consumo de corrente
+  
+  | Componente                        | Quantidade  | Consumo total | 
+  |-----------------------------------|:-----------:|:-------------:|
+  | ESP32S-NodeMCU                    | 1           | ~250mA[^1]    |
+  | ESP32-CAM                         | 1           | ~250mA[^2]    |
+  | Sensor ultrassônico HC-SR04       | 1           | ~15mA         |
+  | Driver motor TB6612FNG            | 1           | ~1,5mA        |
+  | Motor DC 3-6V 200RPM              | 2           | ~400mA[^3]    |
+  | Sensor de velocidade LM393        | 2           | ~20mA         |
+  | **Total**                         | **8**       | **~936,5mA**  |
+  
+  Para fins de cálculo, arredondar-se-á o consumo total para 1A (1000mA).
+  
+  #### Autonomia
+  
+  ![18650](https://i.imgur.com/sR7YUmA.jpeg)
+  
+  As baterias de lítio 18650 têm gravado nos seus invólucros a capacidade de carga elétrica de **3800mAh**. Porém, [é interessante notar que o vendedor fez testes e alegou a capacidade de apenas 1500mAh](https://www.usinainfo.com.br/baterias/bateria-18650-litio-recarregavel-37v-3800mah-flat-top-8760.html). Portanto, para fins de cálculo neste trabalho, adotar-se-á o valor de **1500mAh**.
+  
+  Fazendo um cálculo simples de autonomia,
+  
+  $Autonomia = \frac{Capacidade \ de \ carga \ elétrica}{Consumo \ de \ corrente \ elétrica} = \frac{1500mAh}{1000mA} ≈ 1,5h$
+  
+  Logo, o grupo espera que o B1-M1 tenha uma autonomia de aproximadamente **1 hora e 30 minutos** funcionando com as premissas de consumo feitas na tabela **Consumo de corrente**.
+  
+  #### Seção dos cabos utilizados
+  
+  Como cabos de bitola 1mm² suportam correntes contínuas de até 10A, adotou-se o seu uso nas conexões do pack de baterias 18650 com a BMS e da BMS com os reguladores de tensão.
+  
+  Nas demais conexões utilizou-se cabos de 0,75mm², que suportam correntes contínuas de até 8A.
+</details>
 
 ---
 
