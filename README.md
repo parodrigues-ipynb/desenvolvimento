@@ -117,7 +117,7 @@ Uma imagem em alta resolução do esquemático pode ser vista [aqui](https://i.i
 Algumas notas sobre decisões feitas foram colocadas abaixo.
 
 <details>
-  <summary>Capacitores de desacoplamento de 100nF nos terminais dos motores A e B</summary>
+  <summary>💽 Capacitores de desacoplamento de 100nF nos terminais dos motores A e B</summary>
 
   ![Motores escovados](https://i.imgur.com/eeTXd8O.jpeg)
   
