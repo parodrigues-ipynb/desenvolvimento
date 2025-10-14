@@ -164,6 +164,10 @@ A imagem acima mostra diferentes sinais de tensão PWM. As linhas verticais lara
 
 Na imagem os sinais de tensão PWM têm *duty cycles* distintos: 0%, 25%, 50%, 75% e 100%.
 
+Quando o *duty cycle* é 0%, a tensão de saída é 0V. Quando o *duty cycle* é de 100%, a tensão de saída é 5V.
+
+É interessante notar que com *duty cycle* de 50% resulta numa tensão de saída média de 2,5V. 25% resulta em uma tensão média de 1,25V.
+
 É uma prática comum utilizar variáveis numéricas para representar o *duty cycle* em código. Por exemplo, seria teoricamente possível criar uma variável `int pwmA = 0` para representar um *duty cycle* de 0%. Caso fosse desejável alterar o duty cycle para 1%, poderia-se simplesmente alterar o valor da variável para `pwma = 1`, ou 2% → `pwma = 2`, e assim por diante.
 
 O tipo de variável `int` é usado para armazenar números inteiros (-2, -1, 0, 1, 2, 3...). Na ESP32, o `int` ocupa **4 bytes** (32 bits) - o que faz sentido, já que o microcontrolador é baseado em arquitetura 32 bits. Os valores possíveis para variáveis do tipo `int` vão de -2,147,483,648 até 2,147,483,647. É possível utlizar `unsigned int` para trabalhar-se com o intervalo de 0 até 4,294,967,295 (aproximadamente 4 bilhões).
