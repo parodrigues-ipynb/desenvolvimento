@@ -76,7 +76,7 @@ Para fins de cálculo, arredondar-se-á o consumo total para 1A (1000mA).
 
 #### Autonomia
 
-![18650](https://i.imgur.com/KVCxV1z.jpeg)
+![18650](https://i.imgur.com/sR7YUmA.jpeg)
 
 As baterias de lítio 18650 têm gravado nos seus invólucros a capacidade de carga elétrica de **3800mAh**. Porém, [é interessante notar que o vendedor fez testes e alegou a capacidade de apenas 1500mAh](https://www.usinainfo.com.br/baterias/bateria-18650-litio-recarregavel-37v-3800mah-flat-top-8760.html). Portanto, para fins de cálculo neste trabalho, adotar-se-á o valor de **1500mAh**.
 
@@ -102,7 +102,7 @@ Algumas notas sobre decisões feitas são colocadas a seguir.
 
 #### Capacitores de desacoplamento de 100nF nos terminais dos motores A e B
 
-![Motores escovados](https://i.imgur.com/TV1qZob.jpeg)
+![Motores escovados](https://i.imgur.com/eeTXd8O.jpeg)
 
 Motores produzem ruído.
 
@@ -114,7 +114,7 @@ Quando as escovas e as lâminas do anel coletor comutam ocorrem arcos voltaicos 
 
 A equação da tensão para indutores é $v = L \frac{di}{dt}$. Ou seja, a tensão é proporcional à taxa de variação da corrente. Quando a comutação ocorre, a taxa de variação da corrente é abrupta e intensa (indo de 100% para 0% em um intervalo de tempo muito pequeno). Essa grande taxa de variação provoca um pico de tensão nas bobinas e, por consequência, os arcos voltaicos entre as escovas e as lâminas do anel coletor. Os picos de tensão no funcionamento de um motor DC podem ser vistos na imagem abaixo.
 
-![Ruído](https://i.imgur.com/wnImMP7.jpeg)
+![Ruído](https://i.imgur.com/xDD7Uay.jpeg)
 
 Esse ruído pode afetar o funcionamento de outras partes do circuito.
 
@@ -136,77 +136,156 @@ A documentação é apresentada abaixo em ordem cronológica. Cada inserção co
 
 🎥 [Vídeo B1-M1 rodando com a versão 1](https://imgur.com/a/WtTMg6K)
 
-**Comentários sobre o código**
-
-```ino
-// Linha 2
-#define PWMA 4
-```
-`#define` é uma diretiva de pré-processador da linguagem C/C++ que cria uma constante simbólica. O compilador substitui todas as ocorrências do nome pelo valor definido antes de compilar. Por exemplo, `#define PWMA 4` substitui `PWMA` por `4` no momento anterior à compilação. O uso de `#define` é útil para mapear pinos e definir valores fixos/limites (distâncias, velocidades...) que permanecerão constantes ao longo do código, tornando as informações mais claras e fáceis de alterar.
-
-```ino
-// Linha 10
-uint8_t pwmA = 94;
-```
-A variável `pwmA` irá armazenar os valor de duty cycle para o sinal PWM enviado ao motor A.
-
-PWM significa *Pulse Width Modulation*, ou *Modulação de Largura de Pulso*. *Duty cycle*, ou *ciclo de trabalho*, representa a razão entre a **largura de pulso** ($t_{ON}$), que é o tempo em que o sinal permanece em nível HIGH, e o **período total do sinal** ($T$), conforme a expressão:
-
-$$
-Duty \ cycle = \frac{t_{ON}}{T} × 100 \\%
-$$
-
-Por exemplo, se o período $T$ fosse 100ms, um *duty cycle* de 25% teria uma largura de pulso $t_{ON}$ de 25ms.
-
-![Sinal PWM](https://i.imgur.com/OkiNbwV.jpeg)
-
-A imagem acima mostra diferentes sinais de tensão PWM. As linhas verticais laranjas são as marcações de tempo. Portanto, todos os sinais compartilham o mesmo período $T$.
-
-Na imagem os sinais de tensão PWM têm *duty cycles* distintos: 0%, 25%, 50%, 75% e 100%.
-
-Quando o *duty cycle* é 0%, a tensão de saída é 0V. Quando o *duty cycle* é de 100%, a tensão de saída é 5V.
-
-É interessante notar que com *duty cycle* de 50% resulta numa tensão de saída média de 2,5V. 25% resulta em uma tensão média de 1,25V. Essas tensões médias são indicadas pelas linhas laranjas grossas horizontais apontadas pelas setas verdes na caixa de texto *Average Output Voltage*, ou *Tensão Média de Saída*.
-
-É uma prática comum utilizar variáveis numéricas para representar o *duty cycle* em código. Por exemplo, seria teoricamente possível criar uma variável `int pwmA = 0` para representar um *duty cycle* de 0%. Caso fosse desejável alterar o duty cycle para 1%, poderia-se simplesmente alterar o valor da variável para `pwma = 1`, ou 2% → `pwma = 2`, e assim por diante.
-
-O tipo de variável `int` é usado para armazenar números inteiros (-2, -1, 0, 1, 2, 3...). Na ESP32, o `int` ocupa **4 bytes** (32 bits) - o que faz sentido, já que o microcontrolador é baseado em arquitetura 32 bits. Os valores possíveis para variáveis do tipo `int` vão de -2,147,483,648 até 2,147,483,647. É possível utlizar `unsigned int` para trabalhar-se com o intervalo de 0 até 4,294,967,295 (aproximadamente 4 bilhões).
-
-Portanto, no caso da linha 10, poderíamos teoricamente utilizar a variável `unsigned int pwmA` para mapear o *duty cycle*. Se desejássemos utilizar todo o potencial de armazenamento do tipo `unsigned int`, como queremos mapear valores de 0% até 100% num intervalo de 0 até 4,294,967,295, faríamos $\frac{100\\% - 0\\%}{4,294,967,295 - 0} ≈ 0,00000002328\\%$.
-
-Assim, teríamos a seguinte resolução:
-* `pwmA = 0             // → 0%`
-* `pwmA = 1             // → ≈ 0,00000002328%`
-* `pwmA = 2             // → ≈ 0,00000004657%`
-* ...
-* `pwmA = 4294967294    // → ≈ 99,9999999767%`
-* `pwmA = 4294967295    // → 100%`
-
-Agora imaginemos programadores tendo de cotidianamente utilizar essa resolução em seus códigos. Seria um pesadelo ter de lembrar o valor 4294967295, e muito difícil lembrar os valores que mapeam para aproximadamente 25%, 50%, 75%...
+<details>
+  <summary>📝 Comentários sobre o código</summary>
   
-Portanto, no caso de sinais PWM, é comum utilizar-se tipos de variáveis de apenas **1 byte** (8 bits), que na base binária ($2^n$) correspondem a 256 valores possíveis ($2^8 = 256$). Como $\frac{100\\%-0\\%}{255-0} ≈ 0,39\\%$, teríamos a seguinte resolução:
-* `pwmA = 0             // → 0%`
-* `pwmA = 1             // → ≈ 0,39%`
-* `pwmA = 2             // → ≈ 0,78%`
-* ...
-* `pwmA = 254           // → ≈ 99,61%`
-* `pwmA = 255           // → 100%`
-
-No caso da variável `pwmA = 94`, temos um *duty cycle* de aproximadamente 37%.
-
-Fica evidente que 1 byte já traz uma resolução adequada para se programar e ainda possibilita inferir algumas porcentagens intuitivamente:
-* como 100% → 255,
-* então 50% deve ser algo em torno de 127,
-* 25% deve ser algo em torno de 64...
-e assim por diante.
-
-`uint8_t` significa *unsigned integer of length 8 bits*, ou *número inteiro sem sinal de comprimento de 8 bits*. É muito comum encontrar softwares e hardwares que utilizam sinais PWM mapeados por variáveis de 8 bits. Entretanto, é sempre bom ficar atento às convenções adotadas em cada projeto pois pode haver casos em que uma maior resolução é necessária a fim de alcançar maior precisão.
-
-```ino
-// Linha 16
-#define TIMEOUT_US 30000 // [µs]
-```
-
+  ```ino
+  // Linha 2
+  #define PWMA 4
+  ```
+  `#define` é uma diretiva de pré-processador da linguagem C/C++ que cria uma constante simbólica. O compilador substitui todas as ocorrências do nome pelo valor definido antes de compilar. Por exemplo, `#define PWMA 4` substitui `PWMA` por `4` no momento anterior à compilação. O uso de `#define` é útil para mapear pinos e definir valores fixos/limites (distâncias, velocidades...) que permanecerão constantes ao longo do código, tornando as informações mais claras e fáceis de alterar.
+  
+  ```ino
+  // Linha 10
+  uint8_t pwmA = 94;
+  ```
+  A variável `pwmA` irá armazenar os valor de duty cycle para o sinal PWM enviado ao motor A.
+  
+  PWM significa *Pulse Width Modulation*, ou *Modulação de Largura de Pulso*. *Duty cycle*, ou *ciclo de trabalho*, representa a razão entre a **largura de pulso** ($t_{ON}$), que é o tempo em que o sinal permanece em nível HIGH, e o **período total do sinal** ($T$), conforme a expressão:
+  
+  ![Duty cycle](https://i.imgur.com/GDkGRCn.png)
+  
+  Por exemplo, se o período $T$ fosse 100ms, um *duty cycle* de 25% teria uma largura de pulso $t_{ON}$ de 25ms.
+  
+  ![Sinal PWM](https://i.imgur.com/OkiNbwV.jpeg)
+  
+  A imagem acima mostra diferentes sinais de tensão PWM. As linhas verticais laranjas são as marcações de tempo. Portanto, todos os sinais compartilham o mesmo período $T$.
+  
+  Na imagem os sinais de tensão PWM têm *duty cycles* distintos: 0%, 25%, 50%, 75% e 100%.
+  
+  Quando o *duty cycle* é 0%, a tensão de saída é 0V. Quando o *duty cycle* é de 100%, a tensão de saída é 5V.
+  
+  É interessante notar que com *duty cycle* de 50% resulta numa tensão de saída média de 2,5V. 25% resulta em uma tensão média de 1,25V. Essas tensões médias são indicadas pelas linhas laranjas grossas horizontais apontadas pelas setas verdes na caixa de texto *Average Output Voltage*, ou *Tensão Média de Saída*.
+  
+  É uma prática comum utilizar variáveis numéricas para representar o *duty cycle* em código. Por exemplo, seria teoricamente possível criar uma variável `int pwmA = 0` para representar um *duty cycle* de 0%. Caso fosse desejável alterar o duty cycle para 1%, poderia-se simplesmente alterar o valor da variável para `pwma = 1`, ou 2% → `pwma = 2`, e assim por diante.
+  
+  O tipo de variável `int` é usado para armazenar números inteiros (-2, -1, 0, 1, 2, 3...). Na ESP32, o `int` ocupa **4 bytes** (32 bits) - o que faz sentido, já que o microcontrolador é baseado em arquitetura 32 bits. Os valores possíveis para variáveis do tipo `int` vão de -2,147,483,648 até 2,147,483,647. É possível utlizar `unsigned int` para trabalhar-se com o intervalo de 0 até 4,294,967,295 (aproximadamente 4 bilhões).
+  
+  Portanto, no caso da linha 10, poderíamos teoricamente utilizar a variável `unsigned int pwmA` para mapear o *duty cycle*. Se desejássemos utilizar todo o potencial de armazenamento do tipo `unsigned int`, como queremos mapear valores de 0% até 100% num intervalo de 0 até 4,294,967,295, faríamos $\frac{100\\% - 0\\%}{4,294,967,295 - 0} ≈ 0,00000002328\\%$.
+  
+  Assim, teríamos a seguinte resolução:
+  * `pwmA = 0             // → 0%`
+  * `pwmA = 1             // → ≈ 0,00000002328%`
+  * `pwmA = 2             // → ≈ 0,00000004657%`
+  * ...
+  * `pwmA = 4294967294    // → ≈ 99,9999999767%`
+  * `pwmA = 4294967295    // → 100%`
+  
+  Agora imaginemos programadores tendo de cotidianamente utilizar essa resolução em seus códigos. Seria um pesadelo ter de lembrar o valor 4294967295, e muito difícil lembrar os valores que mapeam para aproximadamente 25%, 50%, 75%...
+    
+  Portanto, no caso de sinais PWM, é comum utilizar-se tipos de variáveis de apenas **1 byte** (8 bits), que na base binária ($2^n$) correspondem a 256 valores possíveis ($2^8 = 256$). Como $\frac{100\\%-0\\%}{255-0} ≈ 0,39\\%$, teríamos a seguinte resolução:
+  * `pwmA = 0             // → 0%`
+  * `pwmA = 1             // → ≈ 0,39%`
+  * `pwmA = 2             // → ≈ 0,78%`
+  * ...
+  * `pwmA = 254           // → ≈ 99,61%`
+  * `pwmA = 255           // → 100%`
+  
+  No caso da variável `pwmA = 94`, temos um *duty cycle* de aproximadamente 37%.
+  
+  Fica evidente que 1 byte já traz uma resolução adequada para se programar e ainda possibilita inferir algumas porcentagens intuitivamente:
+  * como 100% → 255,
+  * então 50% deve ser algo em torno de 127,
+  * 25% deve ser algo em torno de 64...
+  e assim por diante.
+  
+  `uint8_t` significa *unsigned integer of length 8 bits*, ou *número inteiro sem sinal de comprimento de 8 bits*. É muito comum encontrar softwares e hardwares que utilizam sinais PWM mapeados por variáveis de 8 bits. Entretanto, é sempre bom ficar atento às convenções adotadas em cada projeto pois pode haver casos em que uma maior resolução é necessária a fim de alcançar maior precisão.
+  
+  ```ino
+  // Linha 16
+  #define TIMEOUT_US 20000 // [µs]
+  ```
+  O sensor de distância ultrassônico HC_SR04 tem dois componentes principais: um emissor e um receptor de pulsos ultrassônicos.
+  
+  ![HC_SR04](https://i.imgur.com/9TA6kXy.jpeg)
+  
+  Chamamos de "som" a propagação de uma onda mecânica através de um meio - comumente nossa atmosfera, ou o nosso "ar".
+  
+  "Ultrassônico" signica um som fora do espectro de audição humana, que costuma ir de aproximadamente 20Hz até 20kHz. Como os pulsos que o HC_SR04 emite têm frequência de 40kHz, então eles são ultrassônicos.
+  
+  O funcionamento do sensor é simples: ele emite um pulso ultrassônico, inicia um cronômetro interno e aguarda o receptor identificar o eco do pulso original transmitido, momento no qual o cronômetro é encerrado.
+  
+  O som se propaga na atmosfera terrestre a 20°C com uma velocidade de aproximadamente 343m/s, ou 0,0343cm/µs.
+  
+  O [datasheet do HC_SR04](https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf) especifica que o sensor é capaz de realizar medições de 2cm até 4m.
+  
+  A definição de velocidade $v$ é a razão da distância $d$ sobre o tempo $t$, ou
+  
+  ![Velocidade](https://i.imgur.com/3BgQRWY.png)
+  
+  Como o pulso ultrassônico deve ir, colidir com um obstáculo e voltar, o tempo medido pelo sensor corresponde à ida e volta do pulso ultrassônico. Portanto, para calcular a distância, devemos dividir o tempo por 2:
+  
+  ![Distância](https://i.imgur.com/dC75AcF.png)
+  
+  Substituindo os valores de limite de distância do HC_SR04 e multiplicando as distâncias por 2 para compensar o ajuste feito pelo sensor, temos:
+  
+  ![Tempos](https://i.imgur.com/0LC2vbj.png)
+  
+  O [datasheet do HC_SR04](https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf) estabelece a seguinte prática para a emissão do pulso ultrassônico:
+  * o pino TRIG deve ser mantido em LOW por 2µs a fim de garantir estabilidade, evitando que o pulso no pino TRIG que virá a seguir seja confundido com o sinal residual de alguma medição anterior. Estamos "resetando" o HC_SR04 com esse pulso LOW de 2µs;
+  * o pino TRIG deve ser mantido em HIGH por 10µs para identificar o comando de emissão do pulso ultrassônico;
+  * o pulso ultrassônico é emitido. São 8 pulsos numa frequência de 40kHz. Isso faz cada pulso ter 25µs de duração e a emissão total demorar 200µs;
+  * após a emissão do pulso ultrassônico, o pino ECHO entra em nível HIGH e permanece assim até que o oitavo pulso seja processado pelo receptor na volta. Quando o oitavo pulso for detectado, o pino ECHO retorna ao nível LOW;
+  * se o tempo TIMEOUT_US for excedido, o pino ECHO retorna a LOW. Portanto, `TIMEOUT_US` é o limite de tempo em microssegundos que o sensor ultrassônico deve aguardar sem que o receptor identifique o eco do pulso ultrassonoro original.
+  
+  Toda essa rotina consta nas linhas 36 até 44 do código.
+  
+  ```ino
+  // Linhas 36 até 44
+  digitalWrite(TRIG, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG, LOW);
+  
+  long duracao = pulseIn(ECHO, HIGH, TIMEOUT_US);
+  float distancia = duracao * 0.0343 / 2; // [cm]
+  ```
+  
+  O diagrama de tempo abaixo apresenta o funcionamento das partes do HC_SR04 visualmente. 
+  
+   ```
+      ________________________________________________________________________________________________________
+     |                                                                                                        |
+     | Pino            ┌┐                                     TIMEOUT_US = 20000µs ┌┐                         |
+     | TRIG            ||                                               ↓          ||                         |
+     | HC_SR04      ---┘└-----------------------------------------(...)---(...)----┘└-------------------(...) |
+     |                 ←→                                                                                     |
+     |                 10µs                                                                                   |
+     |________________________________________________________________________________________________________|
+     |                          8 pulsos                                                                      |
+     | Pulsos               ┌┐┌┐┌┐┌┐┌┐┌┐┌┐┌┐                  TIMEOUT_US = 20000µs     ┌┐┌┐┌┐┌┐┌┐┌┐┌┐┌┐       |
+     | ultrassônicos        ||||||||||||||||                            ↓              ||||||||||||||||       |
+     | emitido      --------┘└┘└┘└┘└┘└┘└┘└┘└----------------------(...)---(...)--------┘└┘└┘└┘└┘└┘└┘└┘└-(...) |
+     | pelo HC_SR04         ←→                                                                                |
+     |                 40kHz = 25µs                                                                           |
+     |                      ←---------------→                                                                 |
+     |                             200µs                                                                      |
+     |________________________________________________________________________________________________________|
+     |                                                                                                        |
+     | Pino                                  ┌----------------┐TIMEOUT_US = 20000µs                           |
+     | ECHO                                  |                |          ↓                                    |
+     | HC_SR04      -------------------------┘                └----(...)---(...)------------------------(...) |
+     |                                                                                                        |
+     |________________________________________________________________________________________________________|
+  
+  ```
+  
+  Como `TIMEOUT_US = 20000`, então o sensor identifica distâncias menores que aproximadamente 3,5m com esse código utilizado:
+  
+  ![Distância](https://i.imgur.com/wkEWmOA.png)
+  
+</details>
 
 
 
