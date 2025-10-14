@@ -98,6 +98,26 @@ Nas demais conexões utilizou-se cabos de 0,75mm², que suportam correntes cont�
 
 Uma imagem do esquemático pode ser vista [aqui](https://i.imgur.com/tPJJAKS.png)
 
+Algumas notas sobre decisões feitas são colocadas a seguir.
+
+#### Capacitores de desacoplamento de 100nF nos terminais dos motores A e B
+
+![Motores escovados](https://i.imgur.com/TV1qZob.jpeg)
+
+Motores produzem ruído.
+
+Nos motores DC utilizados neste projeto, uma das fontes de ruído possíveis é devido à comutação entre as escovas de carbono e o anel coletor laminado (o comutador) do induzido.
+
+[GIF mostrando os arcos voltaicos](https://i.imgur.com/fCO2iG0.gif)
+
+Quando as escovas e as lâminas do anel coletor comutam ocorrem arcos voltaicos (*comutar = ligar ou desligar, interromper e religar uma ligação elétrica*). Esses arcos ocorrem pois uma vez energizadas as bobinas do enrolamento do induzido se comportam como indutores.
+
+A equação da tensão para indutores é $v = L \frac{di}{dt}$. Ou seja, a tensão é proporcional à taxa de variação da corrente. Quando a comutação ocorre, a taxa de variação da corrente é abrupta e intensa (indo de 100% para 0% em um intervalo de tempo muito pequeno). Essa grande taxa de variação provoca um pico de tensão nas bobinas e, por consequência, os arcos voltaicos entre as escovas e as lâminas do anel coletor. Os picos de tensão no funcionamento de um motor DC podem ser vistos na imagem abaixo.
+
+![Ruído](https://i.imgur.com/wnImMP7.jpeg)
+
+Esse ruído pode afetar o funcionamento de outras partes do circuito.
+
 ---
 
 ### Desenvolvimento do código
