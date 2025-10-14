@@ -139,16 +139,63 @@ A documentação é apresentada abaixo em ordem cronológica. Cada inserção co
 **Comentários sobre o código**
 
 ```ino
+// Linha 2
 #define PWMA 4
 ```
-
-*Linha 2* - `#define` é uma diretiva de pré-processador da linguagem C/C++ que cria uma constante simbólica. O compilador substitui todas as ocorrências do nome pelo valor definido antes de compilar. Por exemplo, `#define PWMA 4` substitui `PWMA` por `4` no momento anterior à compilação. O uso de `#define` é útil para mapear pinos e definir valores fixos/limites (distâncias, velocidades...) que permanecerão constantes ao longo do código, tornando as informações mais claras e fáceis de alterar.
+`#define` é uma diretiva de pré-processador da linguagem C/C++ que cria uma constante simbólica. O compilador substitui todas as ocorrências do nome pelo valor definido antes de compilar. Por exemplo, `#define PWMA 4` substitui `PWMA` por `4` no momento anterior à compilação. O uso de `#define` é útil para mapear pinos e definir valores fixos/limites (distâncias, velocidades...) que permanecerão constantes ao longo do código, tornando as informações mais claras e fáceis de alterar.
 
 ```ino
-int pwmA = 94
+// Linha 10
+uint8_t pwmA = 94;
 ```
+A variável `pwmA` irá armazenar os valor de duty cycle para o sinal PWM enviado ao motor A.
 
-*Linha 10* - O tipo `int` é usado para armazenar números inteiros (-2, -1, 0, 1, 2, 3...). Na ESP32, o `int` ocupa **4 bytes** (32 bits) - o que faz sentido, já que o microcontrolador é baseado em arquitetura 32 bits. Os valores possíveis para variáveis do tipo `int` vão de -2,147,483,648 até 2,147,483,647. É possível utlizar `unsigned int` para trabalhar-se com o intervalo de 0 até 4,294,967,295. No caso da linha 10, a variável `pwmA` irá armazenar os valores para o sinal PWM enviado ao motor A. Portanto, pode parecer um exagero o uso do tipo `int`para esta variável, já que o sinal PWM trabalha com valores de 0 até 255. Seria esperado o uso do tipo `uint8_t`, que ocupa apenas **1 byte** (8 bits) e aceita valores de 0 até 255. Entretanto, embora o tipo `int` ocupe 4 vezes mais memória que o tipo `uint8_t`, o uso de `int` facilita diversos cálculos que podem vir a ocorrer envolvendo as variáveis `pwmA` e `pwmB`. O ganho de memória na ESP32 só seria sentido se houvesse centenas ou milhares de variáveis sendo declaradas.
+PWM significa *Pulse Width Modulation*, ou *Modulação de Largura de Pulso*. *Duty cycle*, ou *ciclo de trabalho*, representa a razão entre a **largura de pulso** ($t_{ON}$), que é o tempo em que o sinal permanece em nível HIGH, e o **período total do sinal** ($T$), conforme a expressão:
+
+$$
+Duty \ cycle = \frac{t_{ON}}{T} × 100 \\%
+$$
+
+Por exemplo, se o período $T$ fosse 100ms, um *duty cycle* de 25% teria uma largura de pulso $t_{ON}$ de 25ms.
+
+![Sinal PWM](https://i.imgur.com/OkiNbwV.jpeg)
+
+A imagem acima mostra diferentes sinais de tensão PWM. As linhas verticais laranjas são as marcações de tempo. Portanto, todos os sinais compartilham o mesmo período $T$.
+
+Na imagem os sinais de tensão PWM têm *duty cycles* distintos: 0%, 25%, 50%, 75% e 100%.
+
+É uma prática comum utilizar variáveis numéricas para representar o *duty cycle* em código. Por exemplo, seria teoricamente possível criar uma variável `int pwmA = 0` para representar um *duty cycle* de 0%. Caso fosse desejável alterar o duty cycle para 1%, poderia-se simplesmente alterar o valor da variável para `pwma = 1`, ou 2% → `pwma = 2`, e assim por diante.
+
+O tipo de variável `int` é usado para armazenar números inteiros (-2, -1, 0, 1, 2, 3...). Na ESP32, o `int` ocupa **4 bytes** (32 bits) - o que faz sentido, já que o microcontrolador é baseado em arquitetura 32 bits. Os valores possíveis para variáveis do tipo `int` vão de -2,147,483,648 até 2,147,483,647. É possível utlizar `unsigned int` para trabalhar-se com o intervalo de 0 até 4,294,967,295 (aproximadamente 4 bilhões).
+
+Portanto, no caso da linha 10, poderíamos teoricamente utilizar a variável `unsigned int pwmA` para mapear o *duty cycle*. Se desejássemos utilizar todo o potencial de armazenamento do tipo `unsigned int`, como queremos mapear valores de 0% até 100% num intervalo de 0 até 4,294,967,295, faríamos $\frac{100 - 0}{4,294,967,295 - 0} ≈ 0,00000002328$.
+
+Assim, teríamos a seguinte resolução:
+* `pwmA = 0             // → 0%`
+* `pwmA = 1             // → ≈ 0,00000002328%`
+* `pwmA = 2             // → ≈ 0,00000004657%`
+* ...
+* `pwmA = 4294967294 // → ≈ 99,9999999767%`
+* `pwmA = 4294967295 // → 100%`
+
+Agora imaginemos programadores tendo de cotidianamente utilizar essa resolução em seus códigos. Seria um pesadelo ter de lembrar o valor 4294967295, e muito difícil lembrar os valores que mapeam para aproximadamente 25%, 50%, 75%...
+  
+Portanto, no caso de sinais PWM, é comum utilizar-se tipos de variáveis de apenas **1 byte** (8 bits), que na base binária ($2^n$) correspondem a 256 valores possíveis ($2^8 = 256$). Como $\frac{100-0}{255-0} ≈ 0,39$, teríamos a seguinte resolução:
+* `pwmA = 0             // → 0%`
+* `pwmA = 1             // → ≈ 0,39%`
+* `pwmA = 2             // → ≈ 0,78%`
+* ...
+* `pwmA = 254 // → ≈ 99,61%`
+* `pwmA = 255 // → 100%`
+
+Fica evidente que 1 byte já traz uma resolução adequada para se programar e ainda possibilita inferir algumas porcentagens intuitivamente: como 100% → 255, então 50% deve ser algo em torno de 127, 25% deve ser algo em torno de 64... e assim por diante.
+
+ Assim, o tipo de variável `uint8_t`, que ocupa apenas **1 byte** (8 bits) e aceita valores de 0 até 255, é ideal. `uint8_t` significa *unsigned integer of length 8 bits*, ou *número inteiro sem sinal de comprimento de 8 bits*.
+
+ É muito comum encontrar softwares e hardwares que utilizam sinais PWM mapeados por variáveis de 8 bits. Entretanto, é sempre bom ficar atento às convenções adotadas em cada projeto pois pode haver casos em que uma maior resolução é necessária a fim de alcançar maior precisão.
+
+ 
+
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
