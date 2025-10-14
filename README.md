@@ -138,7 +138,15 @@ A documentação é apresentada abaixo em ordem cronológica. Cada inserção co
 
 **Comentários sobre o código**
 
+```ino
+#define PWMA 4
+```
+
 *Linha 2* - `#define` é uma diretiva de pré-processador da linguagem C/C++ que cria uma constante simbólica. O compilador substitui todas as ocorrências do nome pelo valor definido antes de compilar. Por exemplo, `#define PWMA 4` substitui `PWMA` por `4` no momento anterior à compilação. O uso de `#define` é útil para mapear pinos e definir valores fixos/limites (distâncias, velocidades...) que permanecerão constantes ao longo do código, tornando as informações mais claras e fáceis de alterar.
+
+```ino
+int pwmA = 94
+```
 
 *Linha 10* - O tipo `int` é usado para armazenar números inteiros (-2, -1, 0, 1, 2, 3...). Na ESP32, o `int` ocupa **4 bytes** (32 bits) - o que faz sentido, já que o microcontrolador é baseado em arquitetura 32 bits. Os valores possíveis para variáveis do tipo `int` vão de -2,147,483,648 até 2,147,483,647. É possível utlizar `unsigned int` para trabalhar-se com o intervalo de 0 até 4,294,967,295. No caso da linha 10, a variável `pwmA` irá armazenar os valores para o sinal PWM enviado ao motor A. Portanto, pode parecer um exagero o uso do tipo `int`para esta variável, já que o sinal PWM trabalha com valores de 0 até 255. Seria esperado o uso do tipo `uint8_t`, que ocupa apenas **1 byte** (8 bits) e aceita valores de 0 até 255. Entretanto, embora o tipo `int` ocupe 4 vezes mais memória que o tipo `uint8_t`, o uso de `int` facilita diversos cálculos que podem vir a ocorrer envolvendo as variáveis `pwmA` e `pwmB`. O ganho de memória na ESP32 só seria sentido se houvesse centenas ou milhares de variáveis sendo declaradas.
 
