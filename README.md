@@ -166,7 +166,7 @@ Na imagem os sinais de tensão PWM têm *duty cycles* distintos: 0%, 25%, 50%, 7
 
 Quando o *duty cycle* é 0%, a tensão de saída é 0V. Quando o *duty cycle* é de 100%, a tensão de saída é 5V.
 
-É interessante notar que com *duty cycle* de 50% resulta numa tensão de saída média de 2,5V. 25% resulta em uma tensão média de 1,25V.
+É interessante notar que com *duty cycle* de 50% resulta numa tensão de saída média de 2,5V. 25% resulta em uma tensão média de 1,25V. Essas tensões médias são indicadas pelas linhas laranjas grossas horizontais apontadas pelas setas verdes na caixa de texto *Average Output Voltage*, ou *Tensão Média de Saída*.
 
 É uma prática comum utilizar variáveis numéricas para representar o *duty cycle* em código. Por exemplo, seria teoricamente possível criar uma variável `int pwmA = 0` para representar um *duty cycle* de 0%. Caso fosse desejável alterar o duty cycle para 1%, poderia-se simplesmente alterar o valor da variável para `pwma = 1`, ou 2% → `pwma = 2`, e assim por diante.
 
