@@ -11,12 +11,16 @@ O grupo é integrado por:
 
 Cada membro do grupo envolveu-se em diferentes partes do projeto.
 
+![B1-M1](https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyYWtraTV2dTdxNW42OGphMnJvZnplNmpqM2wzbmhwb2UxcnhpdDFkbCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7abB06u9bNzA8lu8/giphy.gif)
+
 ## B1-M1 - Robô de monitoramento
 Membros envolvidos:
 * Anderson da Silva Quadros;
 * Pedro Augusto Rodrigues
 
 O B1-M1 é um robô de monitoramento.
+
+---
 
 ### Relação de componentes utilizados
 
@@ -30,9 +34,9 @@ O B1-M1 é um robô de monitoramento.
 
 1x [Placa de proteção para bateria (BMS - Battery Management System) 18650-3S-20A](https://www.usinainfo.com.br/controladores-de-carga/placa-de-protecao-para-bateria-18650-3s-20a-12v-hx-3s-fl20-7070.html)
 
-1x [Regulador de tensão XL4015 DC/DC step down 8~36V → 1,25~32V 0,2~3A](https://www.usinainfo.com.br/regulador-de-tensao/regulador-de-tensao-e-corrente-ajustavel-xl4015-dc-step-down-saida-125-a-32vdc-02-a-3a-5880.html)
+1x [Regulador de tensão XL4015 DC/DC step down 8-36V → 1,25-32V 0,2-3A](https://www.usinainfo.com.br/regulador-de-tensao/regulador-de-tensao-e-corrente-ajustavel-xl4015-dc-step-down-saida-125-a-32vdc-02-a-3a-5880.html)
 
-1x [Regulador de tensão LM2596DC DC/DC step down 3,2~40V → 1,5~35V 1,2A](https://www.usinainfo.com.br/regulador-de-tensao/regulador-de-tensao-ajustavel-lm2596-dc-step-down-saida-15v-a-35vdc-12a-2552.html)
+1x [Regulador de tensão LM2596DC DC/DC step down 3,2-40V → 1,5-35V 1,2A](https://www.usinainfo.com.br/regulador-de-tensao/regulador-de-tensao-ajustavel-lm2596-dc-step-down-saida-15v-a-35vdc-12a-2552.html)
 
 1X [Sensor de distância ultrassônico HC-SR04](https://www.usinainfo.com.br/sensor-ultrassonico/sensor-ultrassonico-de-distancia-hc-sr04-2295.html)
 
@@ -44,104 +48,76 @@ O B1-M1 é um robô de monitoramento.
 
 E uma infinidade de terminais, parafusos, porcas, brocas, fixadores, cabos, espaçadores... utilizados para montar o robô em uma estrutura de MDF.
 
+---
+
 ### Memorial de cálculo de dimensionamento
 O grupo pretende alcançar os seguintes objetivos para o robô B1-M1:
 1. mover-se seguindo uma rotina pré-determinada em um ambiente residencial plano e permitir controle remoto;
 2. registrar valores obtidos pelo sensoriamento ultrassônico e visual (fotografias) e permitir o stream (vídeo) durante o acesso remoto;
-3. comunicar-se com o Gemini através da API fornecida pelo Google a fim de obter instruções para movimento autônomo
+3. comunicar-se com o Gemini através da API fornecida pelo Google a fim de obter instruções para movimento autônomo.
 
-Para alcançar os objetivos acima listados foi determinada a necessidade dos componentes listados na seção Relação de componentes utilizados
+Para alcançar os objetivos acima listados foi determinada a necessidade dos componentes listados na seção [Relação de componentes utilizados](#relacao-de-componentes-utilizados).
+
+Como a alimentação elétrica é a espinha dorsal de todo projeto de eletrônica embarcada, o primeiro passo dado pelo grupo foi estimar o consumo de corrente dos componentes utilizados para atingir os objetivos.
+
+#### Consumo de corrente
+
+| Componente                        | Quantidade  | Consumo total | 
+|-----------------------------------|:-----------:|:-------------:|
+| ESP32S-NodeMCU                    | 1           | ~250mA[^1]    |
+| ESP32-CAM                         | 1           | ~250mA[^2]    |
+| Sensor ultrassônico HC-SR04       | 1           | ~15mA         |
+| Driver motor TB6612FNG            | 1           | ~1,5mA        |
+| Motor DC 3-6V 200RPM              | 2           | ~400mA[^3]    |
+| Sensor de velocidade LM393        | 2           | ~20mA         |
+| **Total**                         | **8**       | **~936,5mA**  |
+
+Para fins de cálculo, arredondar-se-á o consumo total para 1A (1000mA).
+
+#### Autonomia
+
+![18650](https://i.imgur.com/KVCxV1z.jpeg)
+
+As baterias de lítio 18650 têm gravado nos seus invólucros a capacidade de carga elétrica de **3800mAh**. Porém, [é interessante notar que o vendedor fez testes e alegou a capacidade de apenas 1500mAh](https://www.usinainfo.com.br/baterias/bateria-18650-litio-recarregavel-37v-3800mah-flat-top-8760.html). Portanto, para fins de cálculo neste trabalho, adotar-se-á o valor de **1500mAh**.
+
+Fazendo um cálculo simples de autonomia,
+
+$Autonomia = \frac{Capacidade \ de \ carga \ elétrica}{Consumo \ de \ corrente \ elétrica} = \frac{1500mAh}{1000mA} ≈ 1,5h$
+
+Logo, o grupo espera que o B1-M1 tenha uma autonomia de aproximadamente **1 hora e 30 minutos** funcionando com as premissas de consumo feitas na tabela **Consumo de corrente**.
+
+#### Seção dos cabos utilizados
+
+Como cabos de bitola 1mm² suportam correntes contínuas de até 10A, adotou-se o seu uso nas conexões do pack de baterias 18650 com a BMS e da BMS com os reguladores de tensão.
+
+Nas demais conexões utilizou-se cabos de 0,75mm², que suportam correntes contínuas de até 8A.
+
+---
 
 ### Desenvolvimento do código
 
-Tanto os alunos Anderson quanto Pedro nunca fizeram antes um projeto
+Tanto os alunos Anderson quanto Pedro nunca fizeram antes um projeto de robótica.
 
-```ino
-// TB6612FNG - Driver motor
-#define PWMA 4
-#define AIN1 16
-#define AIN2 17
-#define PWMB 5
-#define BIN1 18
-#define BIN2 19
-#define STBY 2
+Para fins didáticos e de criação de um memorial de aprendizado, o grupo decidiu documentar o progresso do desenvolvimento do código utilizado no B1-M1.
 
-int pwmA = 94;
-int pwmB = 94;
+A documentação é apresentada abaixo em ordem cronológica. Cada inserção conta com notas pessoais de aprendizado do grupo.
 
-// HC-SR04 - Sensor de distância
-#define TRIG 27
-#define ECHO 14
-#define VELOCIDADE_SOM_CM_US 0.0343 // [cm/µs] Velocidade de propagação de uma onda sonora em um ambiente a 20°C
-#define DISTANCIA_MINIMA_CM 30 // [cm]
-#define DISTANCIA_MAXIMA_CM 100 // [cm]
-#define TIMEOUT_US DISTANCIA_MAXIMA_CM / VELOCIDADE_SOM_CM_US // [µs]
+---
 
-void setup() {
-  pinMode(AIN1, OUTPUT);
-  pinMode(AIN2, OUTPUT);
-  pinMode(BIN1, OUTPUT);
-  pinMode(BIN2, OUTPUT);
-  pinMode(PWMA, OUTPUT);
-  pinMode(PWMB, OUTPUT);
-  pinMode(STBY, OUTPUT);
+#### 13/10/2025
 
-  digitalWrite(STBY, HIGH); // Ativa o driver motor
+💾 [Código versão 1](https://gist.github.com/parodrigues-ipynb/be9dc512e9a064356e3e1a73c458425b)
 
-  pinMode(TRIG, OUTPUT);
-  pinMode(ECHO, INPUT);
-}
+🎥 [Vídeo B1-M1 rodando com a versão 1](https://imgur.com/a/WtTMg6K)
 
-float medirDistancia() {
-  // Dispara pulso ultrassônico no sensor de distância
-  digitalWrite(TRIG, LOW);
-  delayMicroseconds(2);
-  digitalWrite(TRIG, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIG, LOW);
+**Comentários sobre o código**
 
-  // Calcula e retorna a distância até obstáculo
-  long duracao = pulseIn(ECHO, HIGH, TIMEOUT_US);
-  float distancia = duracao * VELOCIDADE_SOM_CM_US / 2; // [cm]
-  return distancia;
-}
+*Linha 2* - `#define` é uma diretiva de pré-processador da linguagem C/C++ que cria uma constante simbólica. O compilador substitui todas as ocorrências do nome pelo valor definido antes de compilar. Por exemplo, `#define PWMA 4` substitui `PWMA` por `4` no momento anterior à compilação. O uso de `#define` é útil para mapear pinos e definir valores fixos/limites (distâncias, velocidades...) que permanecerão constantes ao longo do código, tornando as informações mais claras e fáceis de alterar.
 
-void moverFrente() {
-  digitalWrite(AIN1, HIGH);
-  digitalWrite(AIN2, LOW);
-  digitalWrite(BIN1, HIGH);
-  digitalWrite(BIN2, LOW);
-  analogWrite(PWMA, pwmA);
-  analogWrite(PWMB, pwmB);
-}
+*Linha 10* - O tipo `int` é usado para armazenar números inteiros (-2, -1, 0, 1, 2, 3...). 
 
-void moverTras() {
-  digitalWrite(AIN1, LOW);
-  digitalWrite(AIN2, HIGH);
-  digitalWrite(BIN1, LOW);
-  digitalWrite(BIN2, HIGH);
-  analogWrite(PWMA, pwmA);
-  analogWrite(PWMB, pwmB);
-}
+[^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
-void parar() {
-  digitalWrite(AIN1, LOW);
-  digitalWrite(AIN2, LOW);
-  digitalWrite(BIN1, LOW);
-  digitalWrite(BIN2, LOW);
-  analogWrite(PWMA, 0);
-  analogWrite(PWMB, 0);  
-}
+[^2]: O [datasheet consultado](https://www.handsontec.com/dataspecs/module/ESP32-CAM.pdf) apresenta valores em torno de 200mA para câmera ligada/flash desligado e 300mA para câmera ligada/flash ligado. Os valores podem aumentar em caso de streaming por Wi-Fi. Adotou-se o valor médio.
 
-void loop () {
-  float distancia = medirDistancia(); // [cm]
-
-  if(distancia > DISTANCIA_MINIMA_CM) {
-    moverFrente();
-  } else {
-    parar();
-  }
-
-  delay(200);
-}
-```
+[^3]: [O valor de corrente de 200mA por cada motor é para situações sem carga](https://www.usinainfo.com.br/motor-dc/motor-dc-3-6v-200rpm-com-caixa-de-reducao-e-eixo-duplo-481--3161.html), nas quais os motores estão girando sem resistências mecânicas. Se houver atrito, inclinação, a própria massa do robô..., o valor de corrente pode subir consideravelmente, chegando a valores de até 1,5A por motor. Como não pode-se encontrar um datasheet para o motor específico utilizado, confiou-se nos valores apresentados pelo vendedor.
