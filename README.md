@@ -94,6 +94,12 @@ Nas demais conexões utilizou-se cabos de 0,75mm², que suportam correntes cont�
 
 ---
 
+### Esquemático
+
+Uma imagem do esquemático pode ser vista [aqui](https://i.imgur.com/tPJJAKS.png)
+
+---
+
 ### Desenvolvimento do código
 
 Tanto os alunos Anderson quanto Pedro nunca fizeram antes um projeto de robótica.
