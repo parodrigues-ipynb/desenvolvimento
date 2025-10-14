@@ -168,7 +168,7 @@ Na imagem os sinais de tensão PWM têm *duty cycles* distintos: 0%, 25%, 50%, 7
 
 O tipo de variável `int` é usado para armazenar números inteiros (-2, -1, 0, 1, 2, 3...). Na ESP32, o `int` ocupa **4 bytes** (32 bits) - o que faz sentido, já que o microcontrolador é baseado em arquitetura 32 bits. Os valores possíveis para variáveis do tipo `int` vão de -2,147,483,648 até 2,147,483,647. É possível utlizar `unsigned int` para trabalhar-se com o intervalo de 0 até 4,294,967,295 (aproximadamente 4 bilhões).
 
-Portanto, no caso da linha 10, poderíamos teoricamente utilizar a variável `unsigned int pwmA` para mapear o *duty cycle*. Se desejássemos utilizar todo o potencial de armazenamento do tipo `unsigned int`, como queremos mapear valores de 0% até 100% num intervalo de 0 até 4,294,967,295, faríamos $\frac{100 - 0}{4,294,967,295 - 0} ≈ 0,00000002328$.
+Portanto, no caso da linha 10, poderíamos teoricamente utilizar a variável `unsigned int pwmA` para mapear o *duty cycle*. Se desejássemos utilizar todo o potencial de armazenamento do tipo `unsigned int`, como queremos mapear valores de 0% até 100% num intervalo de 0 até 4,294,967,295, faríamos $\frac{100\\% - 0\\%}{4,294,967,295 - 0} ≈ 0,00000002328\\%$.
 
 Assim, teríamos a seguinte resolução:
 * `pwmA = 0             // → 0%`
@@ -180,7 +180,7 @@ Assim, teríamos a seguinte resolução:
 
 Agora imaginemos programadores tendo de cotidianamente utilizar essa resolução em seus códigos. Seria um pesadelo ter de lembrar o valor 4294967295, e muito difícil lembrar os valores que mapeam para aproximadamente 25%, 50%, 75%...
   
-Portanto, no caso de sinais PWM, é comum utilizar-se tipos de variáveis de apenas **1 byte** (8 bits), que na base binária ($2^n$) correspondem a 256 valores possíveis ($2^8 = 256$). Como $\frac{100-0}{255-0} ≈ 0,39$, teríamos a seguinte resolução:
+Portanto, no caso de sinais PWM, é comum utilizar-se tipos de variáveis de apenas **1 byte** (8 bits), que na base binária ($2^n$) correspondem a 256 valores possíveis ($2^8 = 256$). Como $\frac{100\\%-0\\%}{255-0} ≈ 0,39\\%$, teríamos a seguinte resolução:
 * `pwmA = 0             // → 0%`
 * `pwmA = 1             // → ≈ 0,39%`
 * `pwmA = 2             // → ≈ 0,78%`
