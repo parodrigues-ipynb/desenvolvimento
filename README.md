@@ -138,6 +138,8 @@ Algumas notas sobre decisões feitas foram colocadas abaixo.
   ![Ruído](https://i.imgur.com/xDD7Uay.jpeg)
   
   O objetivo dos capacitores próximos aos terminais do motor é de suprimir um pouco esses picos de tensão gerados pela comutação das escovas e das lâminas do coletor.
+
+  É importante notar que foram utilizados capacitores cerâmicos pois o sentido da corrente pode inverter conforme o sentido de giro dos motores.
   
 </details>
 
