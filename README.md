@@ -175,8 +175,8 @@ Assim, teríamos a seguinte resolução:
 * `pwmA = 1             // → ≈ 0,00000002328%`
 * `pwmA = 2             // → ≈ 0,00000004657%`
 * ...
-* `pwmA = 4294967294 // → ≈ 99,9999999767%`
-* `pwmA = 4294967295 // → 100%`
+* `pwmA = 4294967294    // → ≈ 99,9999999767%`
+* `pwmA = 4294967295    // → 100%`
 
 Agora imaginemos programadores tendo de cotidianamente utilizar essa resolução em seus códigos. Seria um pesadelo ter de lembrar o valor 4294967295, e muito difícil lembrar os valores que mapeam para aproximadamente 25%, 50%, 75%...
   
@@ -185,8 +185,8 @@ Portanto, no caso de sinais PWM, é comum utilizar-se tipos de variáveis de ape
 * `pwmA = 1             // → ≈ 0,39%`
 * `pwmA = 2             // → ≈ 0,78%`
 * ...
-* `pwmA = 254 // → ≈ 99,61%`
-* `pwmA = 255 // → 100%`
+* `pwmA = 254           // → ≈ 99,61%`
+* `pwmA = 255           // → 100%`
 
 No caso da variável `pwmA = 94`, temos um *duty cycle* de aproximadamente 37%.
 
