@@ -96,15 +96,21 @@ Nas demais conexões utilizou-se cabos de 0,75mm², que suportam correntes cont�
 
 ### Esquemático
 
-Uma imagem do esquemático pode ser vista [aqui](https://i.imgur.com/tPJJAKS.png)
+![Esquemático](https://i.imgur.com/hKs6kS9.jpeg)
 
-Algumas notas sobre decisões feitas são colocadas a seguir.
+Uma imagem em alta resolução do esquemático pode ser vista [aqui](https://i.imgur.com/tPJJAKS.png)
+
+Algumas notas sobre decisões feitas foram colocadas abaixo.
 
 #### Capacitores de desacoplamento de 100nF nos terminais dos motores A e B
 
 ![Motores escovados](https://i.imgur.com/eeTXd8O.jpeg)
 
 Motores produzem ruído.
+
+No contexto do B1-M1, "ruído" é entendido como as ondas eletromagnéticas emitidas por um dispositivo durante seu funcionamento afetarem o funcionamento de outros dispositivos eletrônicos.
+
+Ruído é um problema difícil de resolver, pois fisicamente eles são uma forma de energia eletromagnética - que também é a descrição para sinais elétricos. Assim, como distinguir sinais de ruídos? A energia eletromagnética que é essencial para o funcionamento de um sistema pode ser a causa de ruído indesejado para outro.
 
 Nos motores DC utilizados neste projeto, uma das fontes de ruído possíveis é devido à comutação entre as escovas de carbono e o anel coletor laminado (o comutador) do induzido.
 
@@ -116,7 +122,7 @@ A equação da tensão para indutores é $v = L \frac{di}{dt}$. Ou seja, a tens�
 
 ![Ruído](https://i.imgur.com/xDD7Uay.jpeg)
 
-Esse ruído pode afetar o funcionamento de outras partes do circuito.
+O objetivo dos capacitores próximos aos terminais do motor é de suprimir um pouco esses picos de tensão gerados pela comutação das escovas e das lâminas do coletor.
 
 ---
 
