@@ -162,7 +162,7 @@ A documentação é apresentada abaixo em ordem cronológica. Cada inserção co
 🎥 [Vídeo B1-M1 rodando com a versão 1](https://imgur.com/a/WtTMg6K)
 
 <details>
-  <summary>📝 Comentários sobre o código</summary>
+  <summary>📝 Comentários sobre o código versão 1</summary>
   
   ```ino
   // Linha 2
@@ -312,7 +312,89 @@ A documentação é apresentada abaixo em ordem cronológica. Cada inserção co
   
 </details>
 
+---
 
+#### 14/10/2025
+
+💾 [Código versão 2](https://gist.github.com/parodrigues-ipynb/5a684ad0ee756691a03b47f6cd5c61a2)
+
+🎥 [Vídeo B1-M1 rodando com a versão 2]()
+
+Nesta versão foi feita a substituição da função `analogWrite()` pelas funções `ledcSetup()`, `ledcAttachPin()` e `ledcWrite()`.
+
+A função `analogWrite()` é uma função padrão a API Arduino, mas não é nativa na plataforma ESP32. Na ESP32, a função `analogWrite()` é apenas um *wrapper* (camada de compatibilidade) que chama o sistema PWM por hardware (LEDC).
+
+`analogWrite()` funciona, mas é genérico e limitado. Como o B1-M1 tem uma ESP32-CAM com Wi-Fi ativo, é mais robusto usar LEDC configurado manualmente para controlar frequência, resolução e canais, garantindo um sinal PWM estável mesmo durante o streaming de vídeo via Wi-Fi.
+
+<details>
+  <summary>📝 Comentários sobre o código versão 2</summary>
+
+  LEDC (*LED Control*) é um periférico de hardware interno da ESP32 projetado parar gerar sinais PWM com alta precisão e baixo uso da CPU.
+
+  Esse periférico permite até **16 canais PWM independentes** e **8 temporizadores** que definem a frequência (de 1Hz até 40MHz) e resolução (de 1 até 20 bits) compartilhadas entre canais.
+
+  Uma das grandes vantagens é que esse periférico mantém o sinal PWM ativo sem intervenção do processador. Ou seja, mesmo que a CPU fique sobrecarregada com funções de Wi-Fi, o sinal PWM permanecerá estável.
+
+  ```ino
+  const unsigned long TIMEOUT_US = DISTANCIA_MAXIMA_CM / VELOCIDADE_SOM_CM_US // [µs]
+  ```
+
+  `TIMEOUT_US` foi transformada em uma variável pois `#define` não faz cálculos com `floats` corretamente. O resultado da divisão de macros é `int` - o que pode comprometer o funcionamento do código de forma inesperada4.
+
+  ```ino
+  #define FREQUENCIA_PWM 5000 // [Hz] Frequência do PWM
+  #define RESOLUCAO_PWM 8     // [bits] Resolução (caso o valor seja 8, então a resolução é de 0-255 pois 2^8 = 256)
+  #define CANAL_PWMA 0
+  #define CANAL_PWMB 1
+  ```
+  Foi acrescentado o bloco de código acima nas definições para configurar o LEDC.
+  
+  `FREQUENCIA_PWM` define a frequência que será utilizada nos canais dos sinais PWM. O valor de 5kHz é comumente utilizado para motores DC. Frequências muito baixas, como 50Hz, fazem o motor gerar um zumbido audível. Frequências muito altas, como 50kHz, aumentam a perda de potência no driver.
+  
+  ```ino
+  void setup() {
+    pinMode(AIN1, OUTPUT);
+    pinMode(AIN2, OUTPUT);
+    pinMode(BIN1, OUTPUT);
+    pinMode(BIN2, OUTPUT);
+    ledcSetup(CANAL_PWMA, FREQUENCIA_PWM, RESOLUCAO_PWM);
+    ledcAttachPin(PWMA, CANAL_PWMA);
+    ledcSetup(CANAL_PWMB, FREQUENCIA_PWM, RESOLUCAO_PWM);
+    ledcAttachPin(PWMB, CANAL_PWMB);
+    pinMode(STBY, OUTPUT);
+  
+    digitalWrite(STBY, HIGH); // Ativa o driver motor
+  
+    pinMode(TRIG, OUTPUT);
+    pinMode(ECHO, INPUT);
+  }
+  ```
+
+  As linhas `pinMode(PWMA, OUTPUT)` e `pinMode(PWMB, OUTPUT)` foram removidas do `void setup()`. Foram inseridas as linhas `ledcSetup()` e `ledAttachPin()` para configurar os canais PWM de cada motor.
+
+  ```ino
+  void moverFrente() {
+    digitalWrite(AIN1, HIGH);
+    digitalWrite(AIN2, LOW);
+    digitalWrite(BIN1, HIGH);
+    digitalWrite(BIN2, LOW);
+    ledcWrite(CANAL_PWMA, pwmA);
+    ledcWrite(CANAL_PWMB, pwmB);
+  }
+  
+  void parar() {
+    digitalWrite(AIN1, LOW);
+    digitalWrite(AIN2, LOW);
+    digitalWrite(BIN1, LOW);
+    digitalWrite(BIN2, LOW);
+    ledcWrite(CANAL_PWMA, 0);
+    ledcWrite(CANAL_PWMB, 0); 
+  }
+  ```
+
+  Tanto nas funções `void moverFrente()` quanto `void parar()`, as linhas utilizando `analogWrite()` foram substituídas por `ledcWrite()`.
+
+</details>
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
