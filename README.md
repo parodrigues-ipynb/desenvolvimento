@@ -188,7 +188,13 @@ Portanto, no caso de sinais PWM, é comum utilizar-se tipos de variáveis de ape
 * `pwmA = 254 // → ≈ 99,61%`
 * `pwmA = 255 // → 100%`
 
-Fica evidente que 1 byte já traz uma resolução adequada para se programar e ainda possibilita inferir algumas porcentagens intuitivamente: como 100% → 255, então 50% deve ser algo em torno de 127, 25% deve ser algo em torno de 64... e assim por diante.
+No caso da variável `pwmA = 94`, temos um *duty cycle* de aproximadamente 37%.
+
+Fica evidente que 1 byte já traz uma resolução adequada para se programar e ainda possibilita inferir algumas porcentagens intuitivamente:
+* como 100% → 255,
+* então 50% deve ser algo em torno de 127,
+* 25% deve ser algo em torno de 64...
+e assim por diante.
 
 `uint8_t` significa *unsigned integer of length 8 bits*, ou *número inteiro sem sinal de comprimento de 8 bits*. É muito comum encontrar softwares e hardwares que utilizam sinais PWM mapeados por variáveis de 8 bits. Entretanto, é sempre bom ficar atento às convenções adotadas em cada projeto pois pode haver casos em que uma maior resolução é necessária a fim de alcançar maior precisão.
 
