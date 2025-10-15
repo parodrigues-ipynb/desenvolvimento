@@ -413,7 +413,7 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
 
 💾 [Código versão 3](https://gist.github.com/parodrigues-ipynb/389f387e5dbd8301c90e3fee4f395897)
 
-🎥 [Vídeo B1-M1 rodando com a versão 3]()
+🎥 [Vídeo B1-M1 rodando com a versão 3](https://imgur.com/a/VA4kzjJ)
 
 Nesta versão as ocorrências de `delay()` foram substituídas por `millis()`.
 
@@ -462,6 +462,24 @@ Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas 
   O já mencionado [artigo "Usando millis() para contagem de tempo - Uma introdução para iniciantes"](https://forum.arduino.cc/t/using-millis-for-timing-a-beginners-guide/483573) tem uma explicação muito boa sobre essa lógica.
   
 </details>
+
+---
+
+#### 15/10/2025
+
+💾 [Código versão 4]()
+
+🎥 [Vídeo B1-M1 rodando com a versão 4]()
+
+<details>
+  <summary>📝 Comentários sobre o código versão 3</summary>
+
+  ```ino
+  #define NUMERO_AMOSTRAS 5               // Quantidade de amostras que o HC-SR04 coleta para fazer a média da filtragem simples
+  ```
+  Foi adicionado o macro NUMERO_AMOSTRAS para indicar a quantidade de medições que o HC-SR04 deve fazer para utilizar no cálculo da média durante a filtragem simples.
+
+  O valor de 5 foi escolhido por ser um equilíbrio bom entre estabilidade e tempo de resposta.
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
