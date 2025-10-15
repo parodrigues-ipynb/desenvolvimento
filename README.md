@@ -320,11 +320,11 @@ A documentação é apresentada abaixo em ordem cronológica. Cada inserção co
 
 🎥 [Vídeo B1-M1 rodando com a versão 2]()
 
-Nesta versão foi feita a substituição da função `analogWrite()` pelas funções `ledcSetup()`, `ledcAttachPin()` e `ledcWrite()`.
+Nesta versão foi feita a substituição da função `analogWrite()` pelas funções `ledcAttach()` e `ledcWrite()`.
 
 A função `analogWrite()` é uma função padrão a API Arduino, mas não é nativa na plataforma ESP32. Na ESP32, a função `analogWrite()` é apenas um *wrapper* (camada de compatibilidade) que chama o sistema PWM por hardware (LEDC).
 
-`analogWrite()` funciona, mas é genérico e limitado. Como o B1-M1 tem uma ESP32-CAM com Wi-Fi ativo, é mais robusto usar LEDC configurado manualmente para controlar frequência, resolução e canais, garantindo um sinal PWM estável mesmo durante o streaming de vídeo via Wi-Fi.
+`analogWrite()` funciona, mas é genérico e limitado. Como o B1-M1 tem uma ESP32-CAM com Wi-Fi ativo, é mais robusto usar LEDC configurado manualmente para controlar frequência e resolução, garantindo um sinal PWM estável mesmo durante o streaming de vídeo via Wi-Fi.
 
 <details>
   <summary>📝 Comentários sobre o código versão 2</summary>
@@ -342,14 +342,13 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
   `TIMEOUT_US` foi transformada em uma variável pois há a vontade de calcular o seu valor com base em outros parâmetros e `#define` não faz cálculos com `floats` corretamente. O resultado da divisão de macros é `int` - o que pode comprometer o funcionamento do código de forma inesperada.
 
   ```ino
-  #define FREQUENCIA_PWM 5000 // [Hz] Frequência do PWM
-  #define RESOLUCAO_PWM 8     // [bits] Resolução (caso o valor seja 8, então a resolução é de 0-255 pois 2^8 = 256)
-  #define CANAL_PWMA 0
-  #define CANAL_PWMB 1
+  // Configuração PWM para uso do LEDC
+  #define LEDC_FREQUENCIA_BASE_PWM 5000 // [Hz] Frequência do PWM
+  #define LEDC_RESOLUCAO_BIT_PWM 8     // [bits] Resolução (caso o valor seja 8, então a resolução é de 0-255 pois 2^8 = 256)
   ```
   Foi acrescentado o bloco de código acima nas definições para configurar o LEDC.
   
-  `FREQUENCIA_PWM` define a frequência que será utilizada nos canais dos sinais PWM. O valor de 5kHz é comumente utilizado para motores DC. Frequências muito baixas, como 50Hz, fazem o motor gerar um zumbido audível. Frequências muito altas, como 50kHz, aumentam a perda de potência no driver.
+  `LEDC_FREQUENCIA_BASE_PWM` define a frequência que será utilizada nos canais dos sinais PWM. O valor de 5kHz é comumente utilizado para motores DC. Frequências muito baixas, como 50Hz, fazem o motor gerar um zumbido audível. Frequências muito altas, como 50kHz, aumentam a perda de potência no driver motor TB6612FNG.
   
   ```ino
   void setup() {
@@ -357,10 +356,10 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
     pinMode(AIN2, OUTPUT);
     pinMode(BIN1, OUTPUT);
     pinMode(BIN2, OUTPUT);
-    ledcSetup(CANAL_PWMA, FREQUENCIA_PWM, RESOLUCAO_PWM);
-    ledcAttachPin(PWMA, CANAL_PWMA);
-    ledcSetup(CANAL_PWMB, FREQUENCIA_PWM, RESOLUCAO_PWM);
-    ledcAttachPin(PWMB, CANAL_PWMB);
+    ledcAttach(PWMA, LEDC_FREQUENCIA_BASE_PWM, LEDC_RESOLUCAO_BIT_PWM);
+    ledcWrite(PWMA, 0);
+    ledcAttach(PWMB, LEDC_FREQUENCIA_BASE_PWM, LEDC_RESOLUCAO_BIT_PWM);
+    ledcWrite(PWMB, 0);
     pinMode(STBY, OUTPUT);
   
     digitalWrite(STBY, HIGH); // Ativa o driver motor
@@ -370,7 +369,7 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
   }
   ```
 
-  As linhas `pinMode(PWMA, OUTPUT)` e `pinMode(PWMB, OUTPUT)` foram removidas do `void setup()`. Foram inseridas as linhas `ledcSetup()` e `ledAttachPin()` para configurar os canais PWM de cada motor.
+  As linhas `pinMode(PWMA, OUTPUT)` e `pinMode(PWMB, OUTPUT)` foram removidas do `void setup()`. Foram inseridas nos seus lugares as funções `ledcAttach()` para configurar os pinos PWM de cada motor e `ledcWrite()` para iniciar esses sinais PWM com *duty cycle* de 0%.
 
   ```ino
   void moverFrente() {
@@ -378,8 +377,8 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
     digitalWrite(AIN2, LOW);
     digitalWrite(BIN1, HIGH);
     digitalWrite(BIN2, LOW);
-    ledcWrite(CANAL_PWMA, pwmA);
-    ledcWrite(CANAL_PWMB, pwmB);
+    ledcWrite(PWMA, pwmA);
+    ledcWrite(PWMB, pwmB);
   }
   
   void parar() {
@@ -387,8 +386,8 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
     digitalWrite(AIN2, LOW);
     digitalWrite(BIN1, LOW);
     digitalWrite(BIN2, LOW);
-    ledcWrite(CANAL_PWMA, 0);
-    ledcWrite(CANAL_PWMB, 0); 
+    ledcWrite(PWMA, 0);
+    ledcWrite(PWMB, 0); 
   }
   ```
 
