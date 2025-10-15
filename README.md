@@ -145,10 +145,8 @@ Algumas notas sobre decisões feitas foram colocadas abaixo.
   
   Quando as escovas e as lâminas do anel coletor comutam ocorrem arcos voltaicos (*comutar = ligar ou desligar, interromper e religar uma ligação elétrica*). Esses arcos ocorrem pois uma vez energizadas as bobinas do enrolamento do induzido se comportam como indutores.
   
-  A equação da tensão para indutores é
-  $$
-  v = L \frac{di}{dt}
-  $$
+  A equação da tensão para indutores é $v = L \frac{di}{dt}$
+  
   Ou seja, a tensão é proporcional à taxa de variação da corrente.
   
   Quando a comutação ocorre, a taxa de variação da corrente é abrupta e intensa (indo de 100% para 0% em um intervalo de tempo muito pequeno). Essa grande taxa de variação provoca um pico de tensão nas bobinas e, por consequência, os arcos voltaicos entre as escovas e as lâminas do anel coletor. Os picos de tensão no funcionamento de um motor DC podem ser vistos na imagem abaixo.
