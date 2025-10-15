@@ -552,7 +552,7 @@ A seguinte interpretação das leituras foi considerada
 
 | Situação                                              | Interpretação do B1-M1  | Ação B1-M1 |
 |-------------------------------------------------------|-------------------------|------------|
-| `leiturasValidas = 0`                                 | * Os obstáculos estão mais distantes que `DISTANCIA_MAXIMA_CM` (até onde o B1-M1 "enxerga"), * o ângulo de reflexão é desfavorável * ou há um problema muito grave com as leituras. Enfim, o B1-M1 assume uma postura otimista e considera o caminho como livre  | `distancia == -1` → `moverFrente()` |
+| `leiturasValidas = 0`                                 | Os obstáculos estão mais distantes que `DISTANCIA_MAXIMA_CM` (até onde o B1-M1 "enxerga"), o ângulo de reflexão é desfavorável * ou há um problema muito grave com as leituras. Enfim, o B1-M1 assume uma postura otimista e considera o caminho como livre  | `distancia == -1` → `moverFrente()` |
 | `0 < leiturasValidas < 5`                             | O B1-M1 já é capaz de detectar quando houve falhas de leitura, mas apenas as descarta por enquanto. O tratamento de erros está mais "refinando" o valor de `media` por enquanto | `distancia > DISTANCIA_MINIMA_CM` → `moverFrente()` |
 | `distancia <= DISTANCIA_MINIMA_CM && distancia != -1` | Algum obstáculo está nas iminências do B1-M1, então ele deve parar | `parar()` |
 
