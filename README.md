@@ -471,11 +471,11 @@ Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas 
 
 🎥 [Vídeo B1-M1 rodando com a versão 4]()
 
-Nesta versão houve melhoria na robustez da função `medirDistancia()`, que passou a fazer uma amostragem de 5 leituras e retornar e média dessas leituras.
+Nesta versão houve melhoria na robustez da função `medirDistancia()`, que passou a fazer uma amostragem de 5 leituras e retornar e média dessas leituras. Isso é uma filtragem simples.
 
 Além disso, os macros `VELOCIDADE_SOM_CM_US`, `DISTANCIA_MINIMA_CM`, `DISTANCIA_MAXIMA_CM` e `TIMEOUT_US` foram promovidas a variáveis (parabéns para eles 🎉).
 
-O motivo da alteração é que esses valores participam ou participarão em cálculos realizados ao longo do projeto. Por conta disso, o grupo desejou ter controle sobre o tipo dessas variáveis para ter mais previsibilidade sobre os resultados das operações matemáticas.
+O motivo desta alteração é que esses valores participam ou participarão em cálculos realizados ao longo do projeto. Por conta disso, o grupo desejou ter controle sobre o tipo dessas variáveis para ter mais previsibilidade sobre os resultados das operações matemáticas.
 
 <details>
   <summary>📝 Comentários sobre o código versão 4</summary>
