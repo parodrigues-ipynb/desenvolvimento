@@ -400,6 +400,10 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
 
 #### 15/10/2025
 
+💾 [Código versão 3](https://gist.github.com/parodrigues-ipynb/389f387e5dbd8301c90e3fee4f395897)
+
+🎥 [Vídeo B1-M1 rodando com a versão 3]()
+
 Nesta versão as ocorrências de `delay()` foram substituídas por `millis()`.
 
 O uso de técnicas como a do `millis()` é o padrão para sistemas embarcados que precisam reagir a múltiplos eventos em tempo real, como é o caso do B1-M1.
@@ -411,10 +415,6 @@ Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas 
 📔 [Artigo "Usando millis() para contagem de tempo - Uma introdução para iniciantes"](https://forum.arduino.cc/t/using-millis-for-timing-a-beginners-guide/483573)
 
 📔 [Artigo "Código de demonstração para diversas coisas que ocorrem simultaneamente"](https://forum.arduino.cc/t/demonstration-code-for-several-things-at-the-same-time/217158/2)
-
-💾 [Código versão 3](https://gist.github.com/parodrigues-ipynb/389f387e5dbd8301c90e3fee4f395897)
-
-🎥 [Vídeo B1-M1 rodando com a versão 3]()
 
 <details>
   <summary>📝 Comentários sobre o código versão 3</summary>
