@@ -443,7 +443,7 @@ Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas 
   void loop() {
     unsigned long agora = millis(); // [ms]
   
-    if (agora - ultimoMillis >= intervaloLeitura) {
+    if (agora - ultimoMillis >= intervaloLeituras) {
       ultimoMillis = agora;
   
         float distancia = medirDistancia(); // [cm]
