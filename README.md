@@ -478,7 +478,7 @@ Além disso, os macros `VELOCIDADE_SOM_CM_US`, `DISTANCIA_MINIMA_CM`, `DISTANCIA
 O motivo da alteração é que esses valores participam ou participarão em cálculos realizados ao longo do projeto. Por conta disso, o grupo desejou ter controle sobre o tipo dessas variáveis para ter mais previsibilidade sobre os resultados das operações matemáticas.
 
 <details>
-  <summary>📝 Comentários sobre o código versão 3</summary>
+  <summary>📝 Comentários sobre o código versão 4</summary>
 
   ```ino
   // HC-SR04 - Sensor de distância
