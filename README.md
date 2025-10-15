@@ -429,7 +429,7 @@ Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas 
 
   ```ino
   void loop() {
-    unsigned long agora = millis(); // [ms] Variável de controle de tempo
+    unsigned long agora = millis(); // [ms]
   
     if (agora - ultimoMillis >= intervaloLeitura) {
       ultimoMillis = agora;
