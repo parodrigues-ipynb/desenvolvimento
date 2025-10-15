@@ -531,6 +531,8 @@ O motivo desta alteração é que esses valores participam ou participarão em c
 
   O laço `while (millis() - inicioEspera < INTERVALO_ENTRE_AMOSTRAS)` foi inserido para evitar ruído nas leituras.
 
+</details>
+
 ---
 
 #### 15/10/2025
