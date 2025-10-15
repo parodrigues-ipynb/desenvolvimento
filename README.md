@@ -402,15 +402,53 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
 
 Nesta versão as ocorrências de `delay()` foram substituídas por `millis()`.
 
+O uso de técnicas como a do `millis()` é o padrão para sistemas embarcados que precisam reagir a múltiplos eventos em tempo real, como é o caso do B1-M1.
+
+`delay()` seria um gargalo para o funcionamento do B1-M1 pois essa é uma função **bloqueante**. Isso significa que durante a espera outras tarefas não serão executadas - o que é inviável para uma premissa multitarefas.
+
 Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas práticas de utilização da função `millis()`.
 
 📔 [Artigo "Usando millis() para contagem de tempo - Uma introdução para iniciantes"](https://forum.arduino.cc/t/using-millis-for-timing-a-beginners-guide/483573)
 
 📔 [Artigo "Código de demonstração para diversas coisas que ocorrem simultaneamente"](https://forum.arduino.cc/t/demonstration-code-for-several-things-at-the-same-time/217158/2)
 
+💾 [Código versão 3](https://gist.github.com/parodrigues-ipynb/389f387e5dbd8301c90e3fee4f395897)
+
+🎥 [Vídeo B1-M1 rodando com a versão 3]()
+
 <details>
   <summary>📝 Comentários sobre o código versão 3</summary>
 
+  ```ino
+  unsigned long intervaloLeituras = 200; // [ms]
+  unsigned long ultimoMillis = 0;        // [ms]
+  ```
+
+  Foram criadas duas variáveis do tipo `unsigned long` para trabalhar em conjunto com a lógica de controle temporal através do `millis()`.
+
+  O uso de `unsigned long` é importante pois esse é o tipo de variável usado internamente por `millis()`.
+
+  ```ino
+  void loop() {
+    unsigned long agora = millis(); // [ms] Variável de controle de tempo
+  
+    if (agora - ultimoMillis >= intervaloLeitura) {
+      ultimoMillis = agora;
+  
+        float distancia = medirDistancia(); // [cm]
+  
+      if (distancia > DISTANCIA_MINIMA_CM) {
+        moverFrente();
+      } else {
+        parar();
+      }
+    }
+  }
+  ```
+
+  Essa modificação remove o `delay(200)` da função `void loop()` e coloca a lógica de `millis()` no seu lugar.
+
+  O já mencionado [artigo "Usando millis() para contagem de tempo - Uma introdução para iniciantes"](https://forum.arduino.cc/t/using-millis-for-timing-a-beginners-guide/483573) tem uma explicação muito boa sobre essa lógica.
   
 </details>
 
