@@ -318,7 +318,7 @@ A documentação é apresentada abaixo em ordem cronológica. Cada inserção co
 
 💾 [Código versão 2](https://gist.github.com/parodrigues-ipynb/5a684ad0ee756691a03b47f6cd5c61a2)
 
-🎥 [Vídeo B1-M1 rodando com a versão 2]()
+🎥 [Vídeo B1-M1 rodando com a versão 2](https://imgur.com/a/dLxYKjw)
 
 Nesta versão foi feita a substituição da função `analogWrite()` pelas funções `ledcAttach()` e `ledcWrite()`.
 
