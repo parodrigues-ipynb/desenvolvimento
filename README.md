@@ -408,7 +408,7 @@ Nesta versão as ocorrências de `delay()` foram substituídas por `millis()`.
 
 O uso de técnicas como a do `millis()` é o padrão para sistemas embarcados que precisam reagir a múltiplos eventos em tempo real, como é o caso do B1-M1.
 
-`delay()` seria um gargalo para o funcionamento do B1-M1 pois essa é uma função **bloqueante**. Isso significa que durante a espera outras tarefas não serão executadas - o que é inviável para uma premissa multitarefas.
+`delay()` seria um gargalo para o funcionamento do B1-M1 pois essa é uma função **bloqueante**. Isso significa que outras tarefas não serão executadas durante a espera instaurada por `delay()`: o programa irá ficar "travado" naquele ponto por aquela duração de tempo - o que é inviável para uma premissa multitarefas.
 
 Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas práticas de utilização da função `millis()`.
 
