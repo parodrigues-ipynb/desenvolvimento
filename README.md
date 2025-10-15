@@ -20,6 +20,17 @@ Membros envolvidos:
 
 O B1-M1 é um robô de monitoramento.
 
+O grupo pretende alcançar os seguintes objetivos para o robô B1-M1:
+1. mover-se seguindo uma rotina pré-determinada em um ambiente residencial plano e permitir controle remoto;
+2. registrar valores obtidos pelo sensoriamento ultrassônico e visual (fotografias) e permitir o stream (vídeo) durante o acesso remoto;
+3. comunicar-se com o Gemini através da API fornecida pelo Google a fim de obter instruções para movimento autônomo.
+
+Tanto os alunos Anderson quanto Pedro nunca fizeram antes um projeto de robótica. Portanto, os objetivos listados acima são desafiadores para o grupo.
+
+Para fins didáticos e de criação de um memorial de aprendizado, o grupo decidiu documentar o progresso feito na construção do B1-M1.
+
+A documentação é apresentada abaixo. Cada inserção conta com notas pessoais de aprendizado do grupo. Algumas linhas podem parecer excessivamente detalhadas - muita vezes com informações que podem parecer óbvias a alguém mais experiente - mas é importante lembrar que elas foram escritas mais como um caderno de aula do que como uma documentação profissional.
+
 ---
 
 ### Relação de componentes utilizados
@@ -63,13 +74,6 @@ Nesta seção estão  registrados a metodologia e os cálculos utilizados para d
 
 <details>
   <summary>📝 Memorial</summary>
-
-  O grupo pretende alcançar os seguintes objetivos para o robô B1-M1:
-  1. mover-se seguindo uma rotina pré-determinada em um ambiente residencial plano e permitir controle remoto;
-  2. registrar valores obtidos pelo sensoriamento ultrassônico e visual (fotografias) e permitir o stream (vídeo) durante o acesso remoto;
-  3. comunicar-se com o Gemini através da API fornecida pelo Google a fim de obter instruções para movimento autônomo.
-  
-  Para alcançar os objetivos acima listados foi determinada a necessidade dos componentes listados na seção [Relação de componentes utilizados](#relacao-de-componentes-utilizados).
   
   Como a alimentação elétrica é a espinha dorsal de todo projeto de eletrônica embarcada, o primeiro passo dado pelo grupo foi estimar o consumo de corrente dos componentes utilizados para atingir os objetivos.
   
@@ -147,11 +151,7 @@ Algumas notas sobre decisões feitas foram colocadas abaixo.
 
 ### Desenvolvimento do código
 
-Tanto os alunos Anderson quanto Pedro nunca fizeram antes um projeto de robótica.
-
-Para fins didáticos e de criação de um memorial de aprendizado, o grupo decidiu documentar o progresso do desenvolvimento do código utilizado no B1-M1.
-
-A documentação é apresentada abaixo em ordem cronológica. Cada inserção conta com notas pessoais de aprendizado do grupo.
+O código inicial e as versões com melhorias e alterações feitas pelo grupo estão listadas abaixo. A ordem é cronológica e conta sempre com o código integral, um vídeo e uma breve discussão sobre conceitos utilizados.
 
 ---
 
