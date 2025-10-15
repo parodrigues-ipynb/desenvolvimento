@@ -20,6 +20,14 @@ Membros envolvidos:
 
 O B1-M1 é um robô de monitoramento.
 
+Talvez a primeira pergunta que surja seja "e qual a relação dele com o cuidado de idosos?".
+
+Bem, digamos que o sensor do banheiro dispare um alarme de que talvez ocorreu um acidente, pois alguém entrou no cômodo mas não houve registro de saída depois do intervalo de tempo limite do sensor.
+
+O B1-M1 pode ser útil para se deslocar até o banheiro e abrir uma stream de vídeo e chamada por voz para checar o que pode ter ocorrido, permitindo a alguma terceira pessoa checar se está tudo bem com a pessoa idosa.
+
+Enfim, a maior motivação do projeto é um grande interesse em robótica.
+
 O grupo pretende alcançar os seguintes objetivos para o robô B1-M1:
 1. mover-se seguindo uma rotina pré-determinada em um ambiente residencial plano e permitir controle remoto;
 2. registrar valores obtidos pelo sensoriamento ultrassônico e visual (fotografias) e permitir o stream (vídeo) durante o acesso remoto;
