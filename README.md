@@ -467,7 +467,7 @@ Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas 
 
 #### 15/10/2025
 
-💾 [Código versão 4]()
+💾 [Código versão 4](https://gist.github.com/parodrigues-ipynb/aec2492d27c355218dc54208086fcc25)
 
 🎥 [Vídeo B1-M1 rodando com a versão 4]()
 
