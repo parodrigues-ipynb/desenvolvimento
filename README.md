@@ -471,15 +471,66 @@ Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas 
 
 🎥 [Vídeo B1-M1 rodando com a versão 4]()
 
+Nesta versão houve melhoria na robustez da função `medirDistancia()`, que passou a fazer uma amostragem de 5 leituras e retornar e média dessas leituras.
+
+Além disso, os macros `VELOCIDADE_SOM_CM_US`, `DISTANCIA_MINIMA_CM`, `DISTANCIA_MAXIMA_CM` e `TIMEOUT_US` foram promovidas a variáveis (parabéns para eles 🎉).
+
+O motivo da alteração é que esses valores participam ou participarão em cálculos realizados ao longo do projeto. Por conta disso, o grupo desejou ter controle sobre o tipo dessas variáveis para ter mais previsibilidade sobre os resultados das operações matemáticas.
+
 <details>
   <summary>📝 Comentários sobre o código versão 3</summary>
 
   ```ino
-  #define NUMERO_AMOSTRAS 5               // Quantidade de amostras que o HC-SR04 coleta para fazer a média da filtragem simples
+  // HC-SR04 - Sensor de distância
+  #define TRIG 27
+  #define ECHO 14
+  constexpr float VELOCIDADE_SOM_CM_US = 0.0343    // [cm/µs] Velocidade do som a 20°C
+  constexpr float DISTANCIA_MINIMA_CM = 30         // [cm]
+  constexpr float DISTANCIA_MAXIMA_CM = 100        // [cm]
+  const unsigned long TIMEOUT_US = 20000;          // [µs]
+  constexpr uint8_t NUMERO_AMOSTRAS = 5;           // [amostras] Quantidade de leituras que o HC-SR04 coleta para fazer a média em uma filtragem simples
+  constexpr uint8_t INTERVALO_ENTRE_AMOSTRAS = 10; // [ms] Tempo de espera entre cada leitura para que o som possa se dissipar e não gere ruído
   ```
-  Foi adicionado o macro NUMERO_AMOSTRAS para indicar a quantidade de medições que o HC-SR04 deve fazer para utilizar no cálculo da média durante a filtragem simples.
+  As variáveis `NUMERO_AMOSTRAS` e `INTERVALO_ENTRE_AMOSTRAS` foram criadas como parâmetros para a função `medirDistancia()`.
+  
+  O valor de 5 amostras foi escolhido por ser um equilíbrio bom entre estabilidade e tempo de resposta.
 
-  O valor de 5 foi escolhido por ser um equilíbrio bom entre estabilidade e tempo de resposta.
+  O valor de 10ms para tempo de espera foi escolhido para permitir a dissipação das ondas sonoras no ambiente antes de emitir um novo pulso ultrassônico.
+
+  ```ino
+  float medirDistancia() {
+    float somaDistancias = 0;
+  
+    for(int i = 0; i < NUMERO_AMOSTRAS; i++) {
+      // Dispara pulso ultrassônico
+      digitalWrite(TRIG, LOW);
+      delayMicroseconds(2);
+      digitalWrite(TRIG, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(TRIG, LOW);
+  
+      // Calcula a distância de cada amostra e soma
+      long duracao = pulseIn(ECHO, HIGH, TIMEOUT_US);
+      float distancia = duracao * VELOCIDADE_SOM_CM_US / 2; // [cm]
+      somaDistancias += distancia;
+  
+      // Espera utilizando millis() para que o som possa se dissipar e não afete leituras futuras
+      unsigned long inicioEspera = millis();
+      while (millis() - inicioEspera < INTERVALO_ENTRE_AMOSTRAS) {
+        yield();
+      }
+    }
+  
+    float media = somaDistancias / NUMERO_AMOSTRAS;
+    return media;
+  }
+  ```
+  Foi criada a variável `somaDistancias` e toda a lógica anterior da função `medirDistancia()` foi colocada dentro do laço de repetição `for(int i = 0; i < NUMERO_AMOSTRAS; i++)`.
+
+  O uso do laço `for()` ainda não é a solução ideal para um robô multitarefas como o B1-M1 em função de propriedades semi-bloqueantes do `for()`, mas o grupo quis apenas validar a filtragem simples nessa versão.
+
+  O laço `while (millis() - inicioEspera < INTERVALO_ENTRE_AMOSTRAS)` foi inserido para evitar ruído nas leituras.
+
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
