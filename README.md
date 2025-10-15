@@ -469,7 +469,7 @@ Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas 
 
 💾 [Código versão 4](https://gist.github.com/parodrigues-ipynb/aec2492d27c355218dc54208086fcc25)
 
-🎥 [Vídeo B1-M1 rodando com a versão 4]()
+🎥 [Vídeo B1-M1 rodando com a versão 4](https://imgur.com/a/nlTqG0y)
 
 Nesta versão houve melhoria na robustez da função `medirDistancia()`, que passou a fazer uma amostragem de 5 leituras e retornar a média dessas leituras. Isso é uma filtragem simples.
 
