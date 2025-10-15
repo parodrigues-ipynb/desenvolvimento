@@ -484,9 +484,9 @@ O motivo desta alteração é que esses valores participam ou participarão em c
   // HC-SR04 - Sensor de distância
   #define TRIG 27
   #define ECHO 14
-  constexpr float VELOCIDADE_SOM_CM_US = 0.0343    // [cm/µs] Velocidade do som a 20°C
-  constexpr float DISTANCIA_MINIMA_CM = 30         // [cm]
-  constexpr float DISTANCIA_MAXIMA_CM = 100        // [cm]
+  constexpr float VELOCIDADE_SOM_CM_US = 0.0343;   // [cm/µs] Velocidade do som a 20°C
+  constexpr float DISTANCIA_MINIMA_CM = 30;        // [cm]
+  constexpr float DISTANCIA_MAXIMA_CM = 100;       // [cm]
   const unsigned long TIMEOUT_US = 20000;          // [µs]
   constexpr uint8_t NUMERO_AMOSTRAS = 5;           // [amostras] Quantidade de leituras que o HC-SR04 coleta para fazer a média em uma filtragem simples
   constexpr uint8_t INTERVALO_ENTRE_AMOSTRAS = 10; // [ms] Tempo de espera entre cada leitura para que o som possa se dissipar e não gere ruído
