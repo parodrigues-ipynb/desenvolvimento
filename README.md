@@ -336,10 +336,10 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
   Uma das grandes vantagens é que esse periférico mantém o sinal PWM ativo sem intervenção do processador. Ou seja, mesmo que a CPU fique sobrecarregada com funções de Wi-Fi, o sinal PWM permanecerá estável.
 
   ```ino
-  const unsigned long TIMEOUT_US = DISTANCIA_MAXIMA_CM / VELOCIDADE_SOM_CM_US // [µs]
+  const unsigned long TIMEOUT_US = 20000 // [µs]
   ```
 
-  `TIMEOUT_US` foi transformada em uma variável pois `#define` não faz cálculos com `floats` corretamente. O resultado da divisão de macros é `int` - o que pode comprometer o funcionamento do código de forma inesperada4.
+  `TIMEOUT_US` foi transformada em uma variável pois há a vontade de calcular o seu valor com base em outros parâmetros e `#define` não faz cálculos com `floats` corretamente. O resultado da divisão de macros é `int` - o que pode comprometer o funcionamento do código de forma inesperada.
 
   ```ino
   #define FREQUENCIA_PWM 5000 // [Hz] Frequência do PWM
@@ -394,6 +394,24 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
 
   Tanto nas funções `void moverFrente()` quanto `void parar()`, as linhas utilizando `analogWrite()` foram substituídas por `ledcWrite()`.
 
+</details>
+
+---
+
+#### 15/10/2025
+
+Nesta versão as ocorrências de `delay()` foram substituídas por `millis()`.
+
+Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas práticas de utilização da função `millis()`.
+
+📔 [Artigo "Usando millis() para contagem de tempo - Uma introdução para iniciantes"](https://forum.arduino.cc/t/using-millis-for-timing-a-beginners-guide/483573)
+
+📔 [Artigo "Código de demonstração para diversas coisas que ocorrem simultaneamente"](https://forum.arduino.cc/t/demonstration-code-for-several-things-at-the-same-time/217158/2)
+
+<details>
+  <summary>📝 Comentários sobre o código versão 3</summary>
+
+  
 </details>
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
