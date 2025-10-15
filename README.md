@@ -531,6 +531,30 @@ O motivo desta alteração é que esses valores participam ou participarão em c
 
   O laço `while (millis() - inicioEspera < INTERVALO_ENTRE_AMOSTRAS)` foi inserido para evitar ruído nas leituras.
 
+---
+
+#### 15/10/2025
+
+💾 [Código versão 5](https://gist.github.com/parodrigues-ipynb/aec2492d27c355218dc54208086fcc25)
+
+🎥 [Vídeo B1-M1 rodando com a versão 5](https://imgur.com/a/nlTqG0y)
+
+Nesta versão foi introduzida uma lógica de tratamento de ruídos na função `medirDistancia()`.
+
+Foi criada a variável `uint8_t leiturasValidas` para contabilizar a quantidade de amostras válidas durante a execução de `medirDistancia()`.
+
+Uma leitura é considerada válida se:
+- a variável `duracao` for maior que 0µs. O valor de `duracao` é determinado pela função `pulseIn() e é relativo à duração de tempo em que ECHO permaneceu em nível HIGH;
+- a variável `distancia` for maior ou igual a 2cm. O valor é calculado com base na `duracao` e na `VELOCIDADE_SOM_CM_US`;
+- a variável `distancia` for maior ou igual a `DISTANCIA_MAXIMA_CM`.
+
+A seguinte interpretação das leituras foi considerada
+
+| Situação                                              | Interpretação do B1-M1  | Ação B1-M1 |
+|-------------------------------------------------------|-------------------------|------------|
+| `leiturasValidas = 0`                                 | Os obstáculos estão mais distantes que `DISTANCIA_MAXIMA_CM` (até onde o B1-M1 "enxerga"), o ângulo de reflexão é desfavorável ou há um problema muito grave com as leituras. Enfim, o B1-M1 assume uma postura otimista e considera o caminho como livre  | `distancia == -1` → `moverFrente()` |
+| `0 < leiturasValidas < 5`                             | O B1-M1 já é capaz de detectar quando houve falhas de leitura, mas apenas as descarta por enquanto. O tratamento de erros está mais "refinando" o valor de `media` por enquanto | `distancia > DISTANCIA_MINIMA_CM` → `moverFrente()` |
+| `distancia <= DISTANCIA_MINIMA_CM && distancia != -1` | Algum obstáculo está nas iminências do B1-M1, então ele deve parar | `parar()` |
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
