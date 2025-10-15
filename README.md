@@ -471,7 +471,7 @@ Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas 
 
 🎥 [Vídeo B1-M1 rodando com a versão 4]()
 
-Nesta versão houve melhoria na robustez da função `medirDistancia()`, que passou a fazer uma amostragem de 5 leituras e retornar e média dessas leituras. Isso é uma filtragem simples.
+Nesta versão houve melhoria na robustez da função `medirDistancia()`, que passou a fazer uma amostragem de 5 leituras e retornar a média dessas leituras. Isso é uma filtragem simples.
 
 Além disso, os macros `VELOCIDADE_SOM_CM_US`, `DISTANCIA_MINIMA_CM`, `DISTANCIA_MAXIMA_CM` e `TIMEOUT_US` foram promovidas a variáveis (parabéns para eles 🎉).
 
