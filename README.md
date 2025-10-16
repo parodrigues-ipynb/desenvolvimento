@@ -537,7 +537,7 @@ O motivo desta alteração é que esses valores participam ou participarão em c
 
 #### 15/10/2025
 
-💾 [Código versão 5](https://gist.github.com/parodrigues-ipynb/aec2492d27c355218dc54208086fcc25)
+💾 [Código versão 5](https://gist.github.com/parodrigues-ipynb/b011a81d9a11b35db54fa2a64b99e691)
 
 🎥 [Vídeo B1-M1 rodando com a versão 5](https://imgur.com/a/nlTqG0y)
 
@@ -606,7 +606,13 @@ A variável `TIMEOUT_US` passou a ter um valor dinâmico com base nas variáveis
   ```
   A variável `TIMEOUT_US` agora é calculada dinamicamente. Isso permite maior flexibilidade no código no momento de alteração de parâmetros.
   
+---
 
+#### 16/10/2025
+
+💾 [Código versão 6](https://gist.github.com/parodrigues-ipynb/aec2492d27c355218dc54208086fcc25)
+
+🎥 [Vídeo B1-M1 rodando com a versão 5](https://imgur.com/a/nlTqG0y)
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
