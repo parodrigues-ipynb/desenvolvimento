@@ -70,7 +70,7 @@ Houve uma infinidade de terminais, parafusos, porcas, brocas, fixadores, cabos, 
   
   2x [Motor DC 3~6V 200RPM com caixa de redução 48:1](https://www.usinainfo.com.br/motor-dc/motor-dc-3-6v-200rpm-com-caixa-de-reducao-e-eixo-duplo-481--3161.html)
   
-  2x [Sensor de velocidade LM393](https://www.usinainfo.com.br/sensor-de-velocidade/sensor-de-velocidade-para-arduino-sensor-de-contagem-chave-optica-para-encoder-5mm-4486.html)
+  2x [Sensor de velocidade encoder LM393](https://www.usinainfo.com.br/sensor-de-velocidade/sensor-de-velocidade-para-arduino-sensor-de-contagem-chave-optica-para-encoder-5mm-4486.html)
   
 </details>
 
@@ -610,9 +610,66 @@ A variável `TIMEOUT_US` passou a ter um valor dinâmico com base nas variáveis
 
 #### 16/10/2025
 
-💾 [Código versão 6](https://gist.github.com/parodrigues-ipynb/aec2492d27c355218dc54208086fcc25)
+💾 [Código versão 6]()
 
-🎥 [Vídeo B1-M1 rodando com a versão 5](https://imgur.com/a/nlTqG0y)
+🎥 [Vídeo B1-M1 rodando com a versão 6]()
+
+Nesta versão foram adicionadas as variáveis, funções e trechos de códigos em `void setup()` e `void loop()` para começar a fazer uso dos sensores de velocidade encoder LM393.
+
+📔 [Artigo "Ligação entre encoder LM393 e Arduino para medir ângulo e velocidade angular"](https://aleksandarhaber.com/interface-lm393-encoder-with-arduino-and-measure-the-angle-and-angular-velocity/)
+
+<details>
+  <summary>📝 Comentários sobre o código versão 6</summary>
+
+  ```ino
+  // LM393 - Sensor de velocidade
+  #define SENSOR_VELOCIDADE_MOTOR_A 34
+  #define SENSOR_VELOCIDADE_MOTOR_B 35
+  volatile unsigned long pulsosMotorA = 0;
+  volatile unsigned long pulsosMotorB = 0;
+  ```
+  Foram definidos os pinos GPIO 34 e 35 através das diretivas `SENSOR_VELOCIDADE_MOTOR_A` e `SENSOR_VELOCIDADE_MOTOR_B` para receber os sinais dos pinos D0 dos sensores de velocidade dos motores A e B.
+
+  As variáveis `pulsosMotorA` e `pulsosMotorB` são contadores de pulso.
+
+  Quando o disco furado encoder gira os sensores infravermelhos passam a "ligar e desligar" - às vezes a luz infravermelha atravessa um furo do disco, às vezes é interrompida por uma das paredes do disco. Um pulso é justamente a transição de "ligado para desligado" ou "desligado para ligado". Mais para frente no código é definido como é contabilizado o pulso: se é na borda de descida (ligado para desligado) ou subida (desligado para ligado).
+
+  Como os valores dessas variáveis podem ficar muito grandes, o tipo `unsigned long` foi adotado.
+
+  Como são utilizadas funções de interrupção para contabilizar `pulsosMotorA` e `pulsosMotorB`, o tipo `volatile` deve indicar ao compilador que essas variáveis podem ser modificadas fora do fluxo normal do programa. 📼 [Esse vídeo](https://www.youtube.com/watch?v=QtyOiTw0oQc) ajudou os alunos a compreender melhor o conceito de interrupções. O trecho de código a seguir mostra essas funções em si.
+
+  ```ino
+  void IRAM_ATTR contarPulsosMotorA() { pulsosMotorA++; }
+  void IRAM_ATTR contarPulsosMotorB() { pulsosMotorB++; }
+  ```
+
+  O atributo `IRAM_ATTR` é específico da ESP32 e serve para indicar ao compilador que a função deve ser armazenada na IRAM (*internal RAM*, ou *memória RAM interna*, se for permitido o pleonasmo). "ATTR" vem de *attribute*, que traduzido do Inglês significa *atributo*.
+
+  O atributo `IRAM_ATTR` é necessário para que as funções `contarPulsosMotorA()` e `contarPulsosMotorB()` sejam executadas imediatamente quando o evento ocorre. Abaixo é especificado qual é o evento.
+
+  ```ino
+  // LM393 - Sensor de velocidade encoder
+  pinMode(SENSOR_VELOCIDADE_MOTOR_A, INPUT);
+  pinMode(SENSOR_VELOCIDADE_MOTOR_B, INPUT);
+  attachInterrupt(digitalPinToInterrupt(SENSOR_VELOCIDADE_MOTOR_A), contarPulsosMotorA, RISING);
+  attachInterrupt(digitalPinToInterrupt(SENSOR_VELOCIDADE_MOTOR_B), contarPulsosMotorB, RISING);
+  ```
+
+  Essas linhas foram inseridas em `void setup()` e dizem ao compilador quais são os eventos que devem fazer ele executar as funções `contarPulsosMotorA()` e `contarPulsosMotorB()`: uma borda de subida (RISING) nos pinos `SENSOR_VELOCIDADE_MOTOR_A` e `SENSOR_VELOCIDADE_MOTOR_B`.
+
+  ```ino
+  // LM393 - Sensor de velocidade encoder
+  unsigned long pulsosA = pulsosMotorA;
+  unsigned long pulsosB = pulsosMotorB;
+  pulsosMotorA = 0;
+  pulsosMotorB = 0;
+  ```
+
+  Por fim, houve a adição desse bloco em `void loop()`.
+  
+  Os valores dos pulsos dos sensores são armazenados e zerados a cada ciclo de `loop()` pois estamos medindo apenas a velocidade instantânea dos motores e não a distância percorrida - situação na qual deveríamos verificar o total acumulado.
+  
+</details>
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
