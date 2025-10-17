@@ -48,7 +48,7 @@ Nesta seção estão listados os componentes utilizados.
 Houve uma infinidade de terminais, parafusos, porcas, brocas, fixadores, cabos, espaçadores... além da estrutura MDF que não foi listada, já que a estutura atual do B1-M1 é apenas um protótipo.
 
 <details>
-  <summary>📝 Relação de componentes</summary>
+  <summary>📝 Relação de componentes [clique para expandir]</summary>
 
   1x [Placa de desenvolvimento ESP32S-NodeMCU 38 pinos](https://www.usinainfo.com.br/esp32/esp32s-nodemcu-iot-com-wifi-e-bluetooth-38-pinos-com-usb-c-e-cp2102-8796.html)
   
@@ -81,7 +81,7 @@ Houve uma infinidade de terminais, parafusos, porcas, brocas, fixadores, cabos, 
 Nesta seção estão  registrados a metodologia e os cálculos utilizados para dimensionamento dos componentes do B1-M1.
 
 <details>
-  <summary>📝 Memorial</summary>
+  <summary>📝 Memorial [clique para expandir]</summary>
   
   Como a alimentação elétrica é a espinha dorsal de todo projeto de eletrônica embarcada, o primeiro passo dado pelo grupo foi estimar o consumo de corrente dos componentes utilizados para atingir os objetivos.
   
@@ -129,7 +129,7 @@ Uma imagem em alta resolução do esquemático pode ser vista [aqui](https://i.i
 Algumas notas sobre decisões feitas foram colocadas abaixo.
 
 <details>
-  <summary>💽 Capacitores de desacoplamento de 100nF nos terminais dos motores A e B</summary>
+  <summary>💽 Capacitores de desacoplamento de 100nF nos terminais dos motores A e B [clique para expandir]</summary>
 
   ![Motores escovados](https://i.imgur.com/eeTXd8O.jpeg)
   
@@ -174,7 +174,7 @@ O código inicial e as versões com melhorias e alterações feitas pelo grupo e
 🎥 [Vídeo B1-M1 rodando com a versão 1](https://imgur.com/a/WtTMg6K)
 
 <details>
-  <summary>📝 Comentários sobre o código versão 1</summary>
+  <summary>📝 Comentários sobre o código versão 1 [clique para expandir]</summary>
   
   ```ino
   // Linha 2
@@ -339,7 +339,7 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
 `analogWrite()` funciona, mas é genérico e limitado. Como o B1-M1 tem uma ESP32-CAM com Wi-Fi ativo, é mais robusto usar LEDC configurado manualmente para controlar frequência e resolução, garantindo um sinal PWM estável mesmo durante o streaming de vídeo via Wi-Fi.
 
 <details>
-  <summary>📝 Comentários sobre o código versão 2</summary>
+  <summary>📝 Comentários sobre o código versão 2 [clique para expandir]</summary>
 
   LEDC (*LED Control*) é um periférico de hardware interno da ESP32 projetado parar gerar sinais PWM com alta precisão e baixo uso da CPU.
 
@@ -428,7 +428,7 @@ Foram consultados os excelentes artigos abaixo para aprender mais sobre as boas 
 📔 [Artigo "Código de demonstração para diversas coisas que ocorrem simultaneamente"](https://forum.arduino.cc/t/demonstration-code-for-several-things-at-the-same-time/217158/2)
 
 <details>
-  <summary>📝 Comentários sobre o código versão 3</summary>
+  <summary>📝 Comentários sobre o código versão 3 [clique para expandir]</summary>
 
   ```ino
   unsigned long intervaloLeituras = 200; // [ms]
@@ -478,7 +478,7 @@ Além disso, os macros `VELOCIDADE_SOM_CM_US`, `DISTANCIA_MINIMA_CM`, `DISTANCIA
 O motivo desta alteração é que esses valores participam ou participarão em cálculos realizados ao longo do projeto. Por conta disso, o grupo desejou ter controle sobre o tipo dessas variáveis para ter mais previsibilidade sobre os resultados das operações matemáticas e tipos (`int`, `long`, `float`...) desses resultados.
 
 <details>
-  <summary>📝 Comentários sobre o código versão 4</summary>
+  <summary>📝 Comentários sobre o código versão 4 [clique para expandir]</summary>
 
   ```ino
   // HC-SR04 - Sensor de distância
@@ -546,7 +546,7 @@ Nesta versão foi introduzida uma lógica de tratamento de ruídos na função `
 A variável `TIMEOUT_US` passou a ter um valor dinâmico com base nas variáveis `DISTANCIA_MAXIMA_CM` e `VELOCIDADE_SOM_CM_US`.
 
 <details>
-  <summary>📝 Comentários sobre o código versão 5</summary>
+  <summary>📝 Comentários sobre o código versão 5 [clique para expandir]</summary>
 
   ```ino
   float medirDistancia() {
@@ -621,7 +621,7 @@ Nesta versão foram adicionadas as variáveis, funções e trechos de códigos e
 📔 [Artigo "Ligação entre encoder LM393 e Arduino para medir ângulo e velocidade angular"](https://aleksandarhaber.com/interface-lm393-encoder-with-arduino-and-measure-the-angle-and-angular-velocity/)
 
 <details>
-  <summary>📝 Comentários sobre o código versão 6</summary>
+  <summary>📝 Comentários sobre o código versão 6 [clique para expandir]</summary>
 
   ```ino
   // LM393 - Sensor de velocidade
@@ -686,7 +686,7 @@ Nesta versão foram adicionadas variáveis e funções de movimento além de ape
 O controle temporal dos testes das funções de movimento foi implementado utilizando `millis()` para refoçar o aprendizado dos conceitos
 
 <details>
-  <summary></summary>
+  <summary>📝 Comentários sobre o código versão 7 [clique para expandir]</summary>
 
   ```ino
   void moverTras() {
