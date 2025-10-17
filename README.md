@@ -612,7 +612,7 @@ A variável `TIMEOUT_US` passou a ter um valor dinâmico com base nas variáveis
 
 #### 16/10/2025
 
-💾 [Código versão 6]()
+💾 [Código versão 6](https://gist.github.com/parodrigues-ipynb/9d698c0b5be52341f351f407901ce06d)
 
 🎥 [Vídeo B1-M1 rodando com a versão 6]()
 
