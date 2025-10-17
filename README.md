@@ -159,6 +159,20 @@ Algumas notas sobre decisões feitas foram colocadas abaixo.
   
 </details>
 
+<details>
+  <summary>💽 Capacitor de 1000µF entre os terminais VM e GND do driver motor TB6612FNG [clique para expandir]</summary>
+
+  Quando os motores A e B estão ligados, eles podem demandar picos de corrente em função de partidas ou frenagens. Esses picos fazem a tensão de alimentação oscilar.
+
+  ![Corrente inrush](https://i.imgur.com/AXEOBzh.jpeg)
+
+  Os picos de corrente são chamados de corrente *inrush*.
+
+  Quando aplicamos uma tensão $V$ sobre os terminais do motor DC, uma corrente $I$ passa pelos enrolamentos do induzido. Essa corrente $I$, na presença do campo magnético criado pelos ímãs internos do motor DC, gera uma força $F$ sobre as espiras das bobinas do induzido - de acordo com o princípio da Lei de Lorentz (inclusive, [fiz um trabalho sobre a Lei de Lorentz](https://docs.google.com/presentation/d/1fynI4v6RXC3prIWHDpS9ZRpDoe6CXCrVUi7HYExRhsw/edit?usp=sharing)! Nesse trabalho explico bem a fundo esse conceito físico).
+
+  Porém, o motor não começa a girar 
+</details>
+
 ---
 
 ### Desenvolvimento do código
