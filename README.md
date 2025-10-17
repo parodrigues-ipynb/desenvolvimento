@@ -605,6 +605,8 @@ A variável `TIMEOUT_US` passou a ter um valor dinâmico com base nas variáveis
   constexpr unsigned long TIMEOUT_US = (2 * DISTANCIA_MAXIMA_CM) / VELOCIDADE_SOM_CM_US; // [µs] Limite de tempo de aguardo por eco
   ```
   A variável `TIMEOUT_US` agora é calculada dinamicamente. Isso permite maior flexibilidade no código no momento de alteração de parâmetros.
+
+</details>
   
 ---
 
