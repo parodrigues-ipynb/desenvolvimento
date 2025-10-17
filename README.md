@@ -673,6 +673,129 @@ Nesta versão foram adicionadas as variáveis, funções e trechos de códigos e
   
 </details>
 
+---
+
+#### 16/10/2025
+
+💾 [Código versão 7](https://gist.github.com/parodrigues-ipynb/17f40759919c51057b26ca906bcfb080)
+
+🎥 [Vídeo B1-M1 rodando com a versão 7](https://imgur.com/a/xP080Ys)
+
+Nesta versão foram adicionadas variáveis e funções de movimento além de apenas andar para frente e parar.
+
+O controle temporal dos testes das funções de movimento foi implementado utilizando `millis()` para refoçar o aprendizado dos conceitos
+
+<details>
+  <summary></summary>
+
+  ```ino
+  void moverTras() {
+    digitalWrite(AIN1, LOW);
+    digitalWrite(AIN2, HIGH);
+    digitalWrite(BIN1, LOW);
+    digitalWrite(BIN2, HIGH);
+    ledcWrite(PWMA, pwmA);
+    ledcWrite(PWMB, pwmB);
+  }
+  
+  void girarEsquerda() {
+    digitalWrite(AIN1, LOW);
+    digitalWrite(AIN2, HIGH);
+    digitalWrite(BIN1, HIGH);
+    digitalWrite(BIN2, LOW);
+    ledcWrite(PWMA, pwmA);
+    ledcWrite(PWMB, pwmB);
+  }
+  
+  void girarDireita() {
+    digitalWrite(AIN1, HIGH);
+    digitalWrite(AIN2, LOW);
+    digitalWrite(BIN1, LOW);
+    digitalWrite(BIN2, HIGH);
+    ledcWrite(PWMA, pwmA);
+    ledcWrite(PWMB, pwmB);
+  }
+  ```
+  Estas foram as funções de movimento adicionadas.
+
+  As funções `girarEsquerda()` e `girarDireita()` fazem o B1-M1 girar no ponto em que ele está no sentido especificado.
+
+  ```ino
+  // Controle do movimento temporizado para trás
+  unsigned long tempoInicioTras = 0;     // [ms] Registro temporal do momento em que o B1-M1 começou o movimento para trás
+  unsigned long duracaoTras = 1000;      // [ms] Tempo de duração do movimento para trás
+  bool movendoTras = false;              // Flag para lógica do movimento para trás
+  
+  // Controle do movimento temporizado de giro
+  unsigned long tempoInicioGiro = 0;     // [ms] Registro temporal do momento em que o B1-M1 começou o giro
+  unsigned long duracaoGiro = 700;       // [ms] Tempo de duração do movimento de giro
+  bool movendoGiro = false;              // Flag para lógica do movimento de giro
+  ```
+  Foram adicionadas as variáveis acima para controle temporal dos movimentos.
+
+  ```ino
+  void loop() {
+    unsigned long agora = millis(); // [ms]
+  
+    // [TESTE MOVIMENTO] Verificação do movimento para trás
+    if (movendoTras) {
+      if (agora - tempoInicioTras >= duracaoTras) {
+        girarEsquerda();
+        movendoTras = false;
+        movendoGiro = true;
+        tempoInicioGiro = agora;
+      }
+      return;
+    }
+  
+    // [TESTE MOVIMENTO] Verificação do movimento de giro
+    if (movendoGiro) {
+      if (agora - tempoInicioGiro >= duracaoGiro) {
+        parar();
+        movendoGiro = false;
+      }
+      return;
+    }
+  
+    if (agora - ultimoMillis >= intervaloLeituras) {
+      ultimoMillis = agora;
+      
+      float distancia = medirDistancia(); // [cm]
+  
+      // LM393 - Sensor de velocidade encoder
+      noInterrupts();
+      unsigned long pulsosA = pulsosMotorA;
+      unsigned long pulsosB = pulsosMotorB;
+      pulsosMotorA = 0;
+      pulsosMotorB = 0;
+      interrupts();
+  
+      if (pulsosA > 5 && pulsosB > 5) {
+        if (distancia > DISTANCIA_MINIMA_CM || distancia == -1) {
+          moverFrente();
+        } else {
+          girarDireita();
+        }
+      } else {
+        moverTras();
+        movendoTras = true;
+        tempoInicioTras = agora;
+      }
+    }
+  }
+  ```
+  Os blocos `if (movendoTras)` e `if(movendoGiro)` foram adicionados ao `void looop()` para checar o estado (`movendoTras` ou `movendoGiro`) em que o B1-M1 está a cada ciclo de `loop()`.
+
+  É assumido na lógica do `loop()` que o B1-M1 está sempre andando para frente chamando a função `moverFrente()`. Portanto, não há checagem para esse estado neste teste.
+
+  `noInterrupts()` e `interrupts()` foram funções utilizadas para realizar comparações lógicas com as variáveis `pulsosA` e `pulsosB`. O uso delas faz com que os valores de pulsos não mudem durante a atribuição, uma vez que eles são determinados por interrupções e poderiam ter valores ligeiramente diferentes.
+
+  `if (pulsosA > 5 && pulsosB > 5)` foi a lógica utilizada para detectar colisões com objetos que estavam em ângulo desfavorável em relação ao sensor ultrassônico HC-SR04 ou fora da altura dele. A ideia por trás foi "se ambos motores estiverem com um giro apropriado, continue em frente. Se pelo menos um dos motores tiver um giro muito baixo ou 0, mova-se para trás, gire e volte a ir para frente".
+
+</details>
+
+
+
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
 [^2]: O [datasheet consultado](https://www.handsontec.com/dataspecs/module/ESP32-CAM.pdf) apresenta valores em torno de 200mA para câmera ligada/flash desligado e 300mA para câmera ligada/flash ligado. Os valores podem aumentar em caso de streaming por Wi-Fi. Adotou-se o valor médio.
