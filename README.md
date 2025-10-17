@@ -475,7 +475,7 @@ Nesta versão houve melhoria na robustez da função `medirDistancia()`, que pas
 
 Além disso, os macros `VELOCIDADE_SOM_CM_US`, `DISTANCIA_MINIMA_CM`, `DISTANCIA_MAXIMA_CM` e `TIMEOUT_US` foram promovidos a variáveis (parabéns para eles 🎉).
 
-O motivo desta alteração é que esses valores participam ou participarão em cálculos realizados ao longo do projeto. Por conta disso, o grupo desejou ter controle sobre o tipo dessas variáveis para ter mais previsibilidade sobre os resultados das operações matemáticas.
+O motivo desta alteração é que esses valores participam ou participarão em cálculos realizados ao longo do projeto. Por conta disso, o grupo desejou ter controle sobre o tipo dessas variáveis para ter mais previsibilidade sobre os resultados das operações matemáticas e tipos (`int`, `long`, `float`...) desses resultados.
 
 <details>
   <summary>📝 Comentários sobre o código versão 4</summary>
