@@ -174,7 +174,7 @@ Algumas notas sobre decisões feitas foram colocadas abaixo.
   
   Ou seja, haverá um breve momento em que a corrente $I$ atravessará as bobinas do induzido com o induzido praticamente parado, e nesse breve momento é como se o induzido se comportasse como um curto-circuito, pois suas bobinas têm uma resistência $R$ muito baixa e atuam praticamente como se fossem indutores.
 
-  Indutores em circuitos DC atuam como se fossem curto-circuito pois sua impedância $X_L$ é dada por $X_L$ = 2πfL$, e $f = 0Hz$ em um circuito DC (logo, $X_L = 0$). Logo, a única propriedade física das bobinas que se opõem à passagem da corrente $I$ é a sua resistência $R$ que é muito baixa.
+  Indutores em circuitos DC atuam como se fossem curto-circuito pois sua impedância $X_L$ é dada por $X_L = 2πfL$, e $f = 0Hz$ em um circuito DC (logo, $X_L = 0$). Logo, a única propriedade física das bobinas que se opõem à passagem da corrente $I$ é a sua resistência $R$ que é muito baixa.
 
   Pela Lei de Ohm, $I = \frac{V}{R}$. Portanto, se o denominador $R$ for muito pequeno, $I$ será muito grande. O quão grande? Bem, até o valor de pico da corrente *inrush*.
 
