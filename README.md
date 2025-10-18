@@ -178,7 +178,12 @@ Algumas notas sobre decisões feitas foram colocadas abaixo.
 
   Assim que o motor começa a girar, entretanto, ocorre um fenômeno muito peculiar: o motor estabelece o que conhecemos por força contra-eletro motriz (ou $FCEM$) proporcional à sua velocidade - o que está de acordo com o princípio da Indução Eletromagnética de Faraday, que nos diz que a força eletromotriz $\epsilon$ gerada é proporcional à varição de fluxo magnético $ΔΦ$ e inversamente proporcional à variação do tempo $Δt$, ou $\epsilon = - \frac{ΔΦ}{Δt}$.
 
-  Em outras palavras, como as bobinas do induzido são condutores em movimento dentro do campo magnético dos ímãs, uma tensão surge nessas bobinas - uma tensão com polaridade oposta à tensão que estamos aplicando com a bateria para fazer o motor DC girar. Essa tensão oposta (ou $FCEM$) é quem limita a corrente $I$ de continuar aumentando em intensidade.
+  Em outras palavras:
+  * as bobinas do induzido são condutores em movimento dentro do campo magnético $\overrightarrow{B}$ dos ímãs do motor;
+  * o campo magnético $overrightarrow{B}$ tem linhas de fluxo magnético $Φ$ que atravessam os condutores enquanto o induzido gira;
+  * como os condutores estão em movimento, a quantidade de linhas de fluxo magnético $Φ$ está variando - logo, na verdade é um $ΔΦ$ alto com $Δt$ baixo;
+  * $\epsilon = - \frac{ΔΦ}{Δt}$. O sinal negativo é uma consequência da Lei da Conservação de Energia (a tensão induzida se opõe à tensão original que a induziu);
+  * $\epsilon = FCEM$.
   
 </details>
 
