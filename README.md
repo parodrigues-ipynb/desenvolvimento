@@ -168,10 +168,16 @@ Algumas notas sobre decisões feitas foram colocadas abaixo.
 
   Os picos de corrente são chamados de corrente *inrush*.
 
-  Quando aplicamos uma tensão $V$ sobre os terminais do motor DC, uma corrente $I$ passa pelos enrolamentos do induzido. Essa corrente $I$, na presença do campo magnético $\overrightarrow{B}$ criado pelos ímãs internos do motor DC, gera uma força $F$ sobre as espiras das bobinas do induzido - fenômeno este que está de acordo com o princípio da Lei de Lorentz (inclusive, [fiz um trabalho sobre a Lei de Lorentz](https://docs.google.com/presentation/d/1fynI4v6RXC3prIWHDpS9ZRpDoe6CXCrVUi7HYExRhsw/edit?usp=sharing)! Nesse trabalho explico bem a fundo esse conceito físico).
+  Quando aplicamos uma tensão elétrica $V$ sobre os terminais do motor DC surge uma corrente elétrica $I$ nos enrolamentos do induzido. Essa corrente $I$, na presença do campo magnético $\overrightarrow{B}$ criado pelos ímãs internos do motor DC, gera uma força $F$ sobre as espiras das bobinas do induzido - fenômeno este que está de acordo com o princípio da Lei de Lorentz (inclusive, [fiz um trabalho sobre a Lei de Lorentz](https://docs.google.com/presentation/d/1fynI4v6RXC3prIWHDpS9ZRpDoe6CXCrVUi7HYExRhsw/edit?usp=sharing)! Nesse trabalho explico bem a fundo esse conceito físico).
 
-  Porém, embora a corrente elétrica apareça rapidamente nas bobinas do induzido em função do campo elétrico $\overrightarrow{E}$ que estamos estabelecendo com a tensão $V$ aplicada aos terminais do motor (inclusive, aconselho assistir a [esse ótimo vídeo do canal AlphaPhoenix sobre a velocidade da eletricidade](https://www.youtube.com/watch?v=2Vrhk5OjBP8)), o motor não começa a girar instantaneamente. Ou seja, haverá um breve momento em que a corrente $I$ atravessará as bobinas do induzido com o induzido praticamente parado.
+  Porém, embora a corrente elétrica apareça rapidamente nas bobinas do induzido em função do campo elétrico $\overrightarrow{E}$ que estamos estabelecendo com a tensão $V$ aplicada aos terminais do motor (inclusive, aconselho assistir a [esse ótimo vídeo do canal AlphaPhoenix sobre a velocidade da eletricidade](https://www.youtube.com/watch?v=2Vrhk5OjBP8)), o motor não começa a girar instantaneamente.
+  
+  Ou seja, haverá um breve momento em que a corrente $I$ atravessará as bobinas do induzido com o induzido praticamente parado, e nesse breve momento é como se o induzido se comportasse como um curto-circuito, pois suas bobinas têm uma resistência $R$ muito baixa.
 
+  Pela Lei de Ohm, $I = \frac{V}{R}$. Portanto, se o denominador $R$ foi muito pequeno, $I$ será muito grande. O quão grande? Bem, até o pico da corrente *inrush*.
+
+  Assim que o motor começa a girar, entretanto, ocorre um fenômeno muito peculiar: o motor estabelece o que conhecemos por força contra-eletro motriz (ou $FCEM$) proporcional à sua velocidade - o que está de acordo com o princípio da Indução Eletromagnética de Faraday, que nos diz que $\epsilon = - \frac{ΔΦ}{Δt}$.  
+ 
   
 </details>
 
