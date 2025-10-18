@@ -826,42 +826,54 @@ O controle temporal dos testes das funções de movimento foi implementado utili
 
 #### 17/10/2025
 
-Os objetivos do B1-M1 são:
-1. mover-se seguindo uma rotina pré-determinada em um ambiente residencial plano e permitir controle remoto;
-2. registrar valores obtidos pelo sensoriamento ultrassônico e visual (fotografias) e permitir o stream (vídeo) durante o acesso remoto;
-3. comunicar-se com o Gemini através da API fornecida pelo Google a fim de obter instruções para movimento autônomo.
+Neste dia foi definida a estratégia de comunicação e acesso remoto do B1-M1.
 
-Até essa sexta-feira chuvosa, o objetivo 1 está quase concluído: o B1-M1 já consegue receber rotinas e movimentar-se sozinho, mesmo que de maneira muito simples ainda.
+<details>
+  <summary>📝 Memorial das estratégias adotadas [clique para expandir]</summary>
 
-Porém, o B1-M1 ainda não consegue receber controle remoto via web. Ele também ainda não realiza telemetria e nem tem a ESP32-CAM configurada para realizar streams.
-
-Foi feita uma pesquisa para definir a estratégia de comunicação e acesso remoto que o B1-M1. Procurou-se utilizar opções simples que permitissem ao grupo avançar nos objetivos e compreender cada etapa realizada.
-
-Foi definido que:
-* a ESP32 será configurada em modo Wi-Fi STA (cliente) e será conectada a um roteador Wi-Fi, servindo de ponto de acesso remoto;
-* a ESP32 será responsável por hospedar o servidor HTTP e o WebSocket, servindo uma página HTML que exibe os dados de telemetria, a stream da ESP32-CAM e envia comandos em tempo real;
-* a ESP32-CAM irá transmitir o streaming de vídeo via Wi-Fi no protocolo HTTP (MJPEG) na porta 81;
-* tanto a ESP32 quanto a ESP32-CAM **funcionarão localmente** numa mesma rede Wi-Fi;
-* será criado um túnel HTTPS remoto com a ferramenta [ngrok](https://ngrok.com/) para possibilitar o acesso remoto sem precisar configurar roteador;
-* o usuário acessa `http://<ip_esp32>/` e a página HTML exibe o vídeo vindo da ESP32-CAM via `<img src="http://<ip_esp32-cam>:81/stream">`;
-* o WebSocket envia comandos e recebe telemetria em tempo real.
-
-O fluxo adotado foi:
-Usuário (browser) → Roteador → ESP32 (WebSocket e controle dos motores e sensores)
-                       ↓
-              ESP-32CAM (vídeo MJPEG)
-
-As seguintes configurações foram utilizadas no ArduinoIDE para programação da ESP32-CAM:
-`Tools → CPU Frequency: "240MHz (WiFi/BT)"`
-`Tools → Flash Frequency: "80MHz"`
-`Tools → Partition Scheme: "Huge APP (3MB No OTA/1MB SPIFFS)"`
-
-A board `AI Thinker ESP32-CAM` foi utilizada. Ela veio junto no pacote `esp32` da Espressif Systems no Boards Manager (`CTRL+SHIFT+B`) do ArduinoIDE.
-
-A biblioteca da esp32 foi inserida da seguinte forma no ArduinoIDE:
-`File → Preferences`, e então na linha `Additional boards manager URLs:` foi inserido `https://dl.espressif.com/dl/package_esp32_index.json`. Também foi inserido `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`.
-
-Com a board `AI Thinker ESP32-CAM` selecionada no ArduinoIDE, em `File → Examples → ESP32 → Camera → CameraWebServer` é possível localizar o exemplo base utilizado para programar a ESP32-CAM.
+  Os objetivos do B1-M1 são:
+  1. mover-se seguindo uma rotina pré-determinada em um ambiente residencial plano e permitir controle remoto;
+  2. registrar valores obtidos pelo sensoriamento ultrassônico e visual (fotografias) e permitir o stream (vídeo) durante o acesso remoto;
+  3. comunicar-se com o Gemini através da API fornecida pelo Google a fim de obter instruções para movimento autônomo.
+  
+  Até essa sexta-feira chuvosa, o objetivo 1 está quase concluído: o B1-M1 já consegue receber rotinas e movimentar-se sozinho, mesmo que de maneira muito simples ainda.
+  
+  Porém, o B1-M1 ainda não consegue receber controle remoto via web. Ele também ainda não realiza telemetria e nem tem a ESP32-CAM configurada para realizar streams.
+  
+  Foi feita uma pesquisa para definir a estratégia de comunicação e acesso remoto que o B1-M1. Procurou-se utilizar opções simples que permitissem ao grupo avançar nos objetivos e compreender cada etapa realizada.
+  
+  Foi definido que:
+  * a ESP32 será configurada em modo Wi-Fi STA (cliente) e será conectada a um roteador Wi-Fi, servindo de ponto de acesso remoto;
+  * a ESP32 será responsável por hospedar o servidor HTTP e o WebSocket, servindo uma página HTML que exibe os dados de telemetria, a stream da ESP32-CAM e envia comandos em tempo real;
+  * a ESP32-CAM irá transmitir o streaming de vídeo via Wi-Fi no protocolo HTTP (MJPEG) na porta 81;
+  * tanto a ESP32 quanto a ESP32-CAM **funcionarão localmente** numa mesma rede Wi-Fi;
+  * será criado um túnel HTTPS remoto com a ferramenta [ngrok](https://ngrok.com/) para possibilitar o acesso remoto sem precisar configurar roteador;
+  * o usuário acessa `http://<ip_esp32>/` e a página HTML exibe o vídeo vindo da ESP32-CAM via `<img src="http://<ip_esp32-cam>:81/stream">`;
+  * o WebSocket envia comandos e recebe telemetria em tempo real.
+  
+  O fluxo adotado foi:
+  Usuário (browser) → Roteador → ESP32 (WebSocket e controle dos motores e sensores)
+                         ↓
+                ESP-32CAM (vídeo MJPEG)
+  
+  As seguintes configurações foram utilizadas no ArduinoIDE para programação da ESP32-CAM:
+  * `Tools → CPU Frequency: "240MHz (WiFi/BT)"`
+  * `Tools → Flash Frequency: "80MHz"`
+  * `Tools → Partition Scheme: "Huge APP (3MB No OTA/1MB SPIFFS)"`
+  
+  A board `AI Thinker ESP32-CAM` foi utilizada. Ela veio junto no pacote `esp32` da Espressif Systems no Boards Manager (`CTRL+SHIFT+B`) do ArduinoIDE.
+  
+  A biblioteca da esp32 foi inserida da seguinte forma no ArduinoIDE:
+  * `File → Preferences`, e então na linha `Additional boards manager URLs:` foi inserido `https://dl.espressif.com/dl/package_esp32_index.json`. Também foi inserido `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`.
+  
+  Com a board `AI Thinker ESP32-CAM` selecionada no ArduinoIDE, em `File → Examples → ESP32 → Camera → CameraWebServer` é possível localizar o exemplo base utilizado para programar a ESP32-CAM.
+  
+  Na aba `board_config.h` foi selecionada a board `#define CAMERA_MODEL_AI_THINKER // Has PSRAM` tirando essa linha dos comentários e deixando as demais comentadas.
+  
+  Na aba `CameraWebServer.ino` foram inseridos os credenciais da rede Wi-Fi local e a variável `config.frame_size` teve seu valor ajustado para `FRAMESIZE_QVGA`.
+  
+  A ESP32-CAM foi conectada ao computador por cabo, um jumper foi colocado entre os pinos GPIO0 e GND e o botão Flash foi pressionado brevemente quando o flash começou após a compilação completar.
+</details>
 
 
 
