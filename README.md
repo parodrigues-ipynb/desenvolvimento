@@ -868,9 +868,11 @@ Neste dia foi definida a estratégia de comunicação e acesso remoto do B1-M1.
   * o WebSocket envia comandos e recebe telemetria em tempo real.
   
   O fluxo adotado foi:
+  ```
   Usuário (browser) → Roteador → ESP32 (WebSocket e controle dos motores e sensores)
                          ↓
                 ESP-32CAM (vídeo MJPEG)
+  ```
   
   As seguintes configurações foram utilizadas no ArduinoIDE para programação da ESP32-CAM:
   * `Tools → CPU Frequency: "240MHz (WiFi/BT)"`
