@@ -172,11 +172,21 @@ Algumas notas sobre decisões feitas foram colocadas abaixo.
 
   Porém, embora a corrente elétrica apareça rapidamente nas bobinas do induzido em função do campo elétrico $\overrightarrow{E}$ que estamos estabelecendo com a tensão $V$ aplicada aos terminais do motor (inclusive, aconselho assistir a [esse ótimo vídeo do canal AlphaPhoenix sobre a velocidade da eletricidade](https://www.youtube.com/watch?v=2Vrhk5OjBP8)), o motor não começa a girar instantaneamente.
   
-  Ou seja, haverá um breve momento em que a corrente $I$ atravessará as bobinas do induzido com o induzido praticamente parado, e nesse breve momento é como se o induzido se comportasse como um curto-circuito, pois suas bobinas têm uma resistência $R$ muito baixa.
+  Ou seja, haverá um breve momento em que a corrente $I$ atravessará as bobinas do induzido com o induzido praticamente parado, e nesse breve momento é como se o induzido se comportasse como um curto-circuito, pois suas bobinas têm uma resistência $R$ muito baixa e atuam praticamente como se fossem indutores.
 
-  Pela Lei de Ohm, $I = \frac{V}{R}$. Portanto, se o denominador $R$ foi muito pequeno, $I$ será muito grande. O quão grande? Bem, até o pico da corrente *inrush*.
+  Indutores em circuitos DC atuam como se fossem curto-circuito pois sua impedância $X_L$ é dada por $X_L$ = 2πfL$, e $f = 0Hz$ em um circuito DC (logo, $X_L = 0$). Logo, a única propriedade física das bobinas que se opõem à passagem da corrente $I$ é a sua resistência $R$ que é muito baixa.
 
-  Assim que o motor começa a girar, entretanto, ocorre um fenômeno muito peculiar: o motor estabelece o que conhecemos por força contra-eletro motriz (ou $FCEM$) proporcional à sua velocidade - o que está de acordo com o princípio da Indução Eletromagnética de Faraday, que nos diz que a força eletromotriz $\epsilon$ gerada é proporcional à varição de fluxo magnético $ΔΦ$ e inversamente proporcional à variação do tempo $Δt$, ou $\epsilon = - \frac{ΔΦ}{Δt}$.
+  Pela Lei de Ohm, $I = \frac{V}{R}$. Portanto, se o denominador $R$ for muito pequeno, $I$ será muito grande. O quão grande? Bem, até o valor de pico da corrente *inrush*.
+
+  Embora tenhamos explicado o motivo da corrente *inrush* surgir, não explicamos ainda o que faz ela "diminuir". Sabemos que deve ter algo a ver com a velocidade de giro do induzido, pois a curva da corrente *inrush* se comporta da seguinte maneira:
+  * cresce conforme o induzido sai da posição parado e começa a adquirir velocidade;
+  * atinge um pico quando o induzido atinge uma determinada velocidade;
+  * decresce quando o induzido ultrapassa essa determinada velocidade;
+  * estabiliza quando o induzido atinge sua velocidade nominal.
+
+  O surgimento da corrente *inrush* estava relacionado à baixa resistência $R$ das bobinas. Entretanto, já que a resistência $R$ não muda conforme o induzido gira mais rápida ou mais lentamente, a resistência $R$ não deve ser a causa da estabilização da corrente $I$. Porém, é claro que o motivo da estabilização da corrente tem relação com o giro do induzido.
+
+  E é justamente o giro do induzido a causa da estabalização. Assim que o motor começa a girar ocorre um fenômeno muito peculiar: o motor estabelece o que conhecemos por força contra-eletro motriz (ou $FCEM$) proporcional à sua velocidade - o que está de acordo com o princípio da Indução Eletromagnética de Faraday, que nos diz que a força eletromotriz $\epsilon$ gerada é proporcional à varição de fluxo magnético $ΔΦ$ e inversamente proporcional à variação do tempo $Δt$, ou $\epsilon = - \frac{ΔΦ}{Δt}$.
 
   Em outras palavras:
   * as bobinas do induzido são condutores em movimento dentro do campo magnético $\overrightarrow{B}$ dos ímãs do motor;
