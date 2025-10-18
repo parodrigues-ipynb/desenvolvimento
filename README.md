@@ -869,9 +869,9 @@ Neste dia foi definida a estratégia de comunicação e acesso remoto do B1-M1.
   
   O fluxo adotado foi:
   ```
-  Usuário (browser) → Roteador → ESP32 (WebSocket e controle dos motores e sensores)
-                         ↓
-                ESP-32CAM (vídeo MJPEG)
+  Usuário (browser) → Túnel HTTPS → Roteador → ESP32 (WebSocket e controle dos motores e sensores)
+                                      ↓
+                         ESP-32CAM (vídeo MJPEG)
   ```
   
   As seguintes configurações foram utilizadas no ArduinoIDE para programação da ESP32-CAM:
