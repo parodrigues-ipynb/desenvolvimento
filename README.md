@@ -176,8 +176,9 @@ Algumas notas sobre decisões feitas foram colocadas abaixo.
 
   Pela Lei de Ohm, $I = \frac{V}{R}$. Portanto, se o denominador $R$ foi muito pequeno, $I$ será muito grande. O quão grande? Bem, até o pico da corrente *inrush*.
 
-  Assim que o motor começa a girar, entretanto, ocorre um fenômeno muito peculiar: o motor estabelece o que conhecemos por força contra-eletro motriz (ou $FCEM$) proporcional à sua velocidade - o que está de acordo com o princípio da Indução Eletromagnética de Faraday, que nos diz que $\epsilon = - \frac{ΔΦ}{Δt}$.  
- 
+  Assim que o motor começa a girar, entretanto, ocorre um fenômeno muito peculiar: o motor estabelece o que conhecemos por força contra-eletro motriz (ou $FCEM$) proporcional à sua velocidade - o que está de acordo com o princípio da Indução Eletromagnética de Faraday, que nos diz que a força eletromotriz $\epsilon$ gerada é proporcional à varição de fluxo magnético $ΔΦ$ e inversamente proporcional à variação do tempo $Δt$, ou $\epsilon = - \frac{ΔΦ}{Δt}$.
+
+  Em outras palavras, como as bobinas do induzido são condutores em movimento dentro do campo magnético dos ímãs, uma tensão surge nessas bobinas - uma tensão com polaridade oposta à tensão que estamos aplicando com a bateria para fazer o motor DC girar. Essa tensão oposta (ou $FCEM$) é quem limita a corrente $I$ de continuar aumentando em intensidade.
   
 </details>
 
