@@ -194,6 +194,12 @@ Algumas notas sobre decisões feitas foram colocadas abaixo.
   * como os condutores estão em movimento, a quantidade de linhas de fluxo magnético $Φ$ está variando - logo, na verdade é um $ΔΦ$ alto com $Δt$ baixo;
   * $\epsilon = - \frac{ΔΦ}{Δt}$. O sinal negativo é uma consequência da Lei da Conservação de Energia (a tensão induzida se opõe à tensão original que a induziu);
   * $\epsilon = FCEM$.
+
+  Certo! E o que tudo isso tem a ver com o capacitor de 1000µF entre os terminais VM e GND do TB6612FNG?
+
+  Bem, embora "microFarad" (µF) possa soar como algo pequeno, esse valor de capacitância certamente não é pequeno. De fato, 1000µF é o suficiente para fornecer uma corrente elétrica "extra" quase que imediatamente quando o motor DC dá partida ou freia. A proximidade do capacitor dos terminais VM e GND torna a resposta ainda mais rápida.
+
+  Se o capacitor não estivesse presente, haveria uma maior tendência de ocorrerem quedas de tensão na alimentação dos motores nos momentos de corrente *inrush*.
   
 </details>
 
