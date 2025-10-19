@@ -957,9 +957,9 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
 
   | Parte do código  | Tipo                  | Função                                                                                          |
   |------------------|-----------------------|-------------------------------------------------------------------------------------------------|
-  | `WebServer`      | Classe de um objeto   | Molde ou tipo de dado que define as características ou comportamento de algo. Neste caso, a classe WebServer foi criada para lidar com as funcionalidades de um servidor web.    *Nota:* Esta classe está na biblioteca WebServer.h |
-  | `server()`       | Nome do objeto        | WebServer é o "molde para servidores". "server()" é o servidor que estamos criando.             |
-  | `80`             | Argumento ou parâm.   | O número '80' é a porta padrão para tráfego de internet não criptografado (HTTP - HyperText Transfer Protocol). Ao passar o argumento '80', estamos instruíndo o objeto server() a "ouvir" as requisições que chegam nessa porta. Quando um navegador web tenta se conectar à ESP32 usando o endereço IP dela, o navegador fará isso na porta 80 por padrão, permitindo que a comunicação entre o servidor e o cliente (navegador) seja estabelecida.    *Nota:* No contexto de redes de computadores, 'porta' é um número que identifica um serviço ou aplicação específica em um computador ou dispositivo. Dá para pensar em 'porta' como sendo o 'número da sala onde ocorrem determinadas atividades'. As portas são essenciais pois permitem a um dispositivo responda diversas requisições em diferentes portas simultaneamente. Inclusive, a porta para HTTPS (tráfego criptografado, seguro) é 443. |
+  | `WebServer`      | Classe de um objeto   | Molde ou tipo de dado que define as características ou comportamento de algo. Neste caso, a classe WebServer foi criada para lidar com as funcionalidades de um servidor web.    *Nota:* Esta classe está na biblioteca `<WebServer.h>` |
+  | `server()`       | Nome do objeto        | `WebServer` é o "molde para servidores". `server()` é o servidor que estamos criando.             |
+  | `80`             | Argumento ou parâm.   | O número `80` é a porta padrão para tráfego de internet não criptografado (*HTTP - HyperText Transfer Protocol*). Ao passar o argumento `80`, estamos instruíndo o objeto `server()` a "ouvir" as requisições que chegam nessa porta. Quando um navegador web tenta se conectar à ESP32 usando o endereço IP dela, o navegador fará isso na porta `80` por padrão, permitindo que a comunicação entre o servidor e o cliente (navegador) seja estabelecida.    *Nota:* No contexto de redes de computadores, 'porta' é um número que identifica um serviço ou aplicação específica em um computador ou dispositivo. Dá para pensar em 'porta' como sendo o 'número da sala onde ocorrem determinadas atividades'. As portas são essenciais pois permitem a um dispositivo responda diversas requisições em diferentes portas simultaneamente. Inclusive, a porta para HTTPS (tráfego criptografado, seguro) é `443`. |
   
   EXEMPLO PRÁTICO
   → Digamos que o IP da ESP32 seja `192.168.1.100`
@@ -967,6 +967,48 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
   → O objeto `server()` na ESP32 irá "receber" ou "escutar" essa requisição e, dependendo do resto do código, responderá com uma página HTML ou
   outra informação qualquer.
 
+  ```ino
+  void handleRoot() {
+    String html = R"rawliteral(
+      <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset = "utf-8">
+            <title>B1-M1</title>
+            <style>
+              body { text-align: center; background-color: #222; color: white; }
+              img { width: 90%; max-width: 480px; border: 2px solid #444; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <h2>Stream da ESP32-CAM</h2>
+            <img src=")rawliteral";
+            html += URL_STREAM_CAMERA;
+            html += R"rawliteral(">
+          </body>
+        </html>
+    )rawliteral";
+  
+    server.send(200, "text/html", html);
+  }
+  ```
+  A função `handleRoot()` foi criada para criar a página HTML exibida durante acessos ao WebServer da ESP32.
+
+  Um *handler* é uma função criada para que um conjunto de ações seja realizado quando diferentes rotas do WebServer forem acessadas.
+
+  Por exemplo, a rota padrão (ou rota raíz, *root* ou simplesmente `/`) da ESP32 é `http://<IP-da-ESP32>/` (a `/` final é o motivo de poder chamar a rota padrão de apenas `/`). O conjunto de ações dentro da função `handleRoot()` deve ser executado quando algum usuário acessar a rota padrão.
+
+  A função começa com uma `String` chamada `html` que contém o código HTML da página que desejamos exibir ao usuário. O prefixo `R"rawliteral(...)rawliteral"` foi utilizado para facilitar a inclusão do bloco de código HTML utilizando múltiplas linhas numa mesma `String`.
+
+  A linha `server.send(200, "text/html", html);` é típica em projetos de WebServer. 
+
+  A função é `send()` chamada quando algum cliente (navegador) acessa a raíz (*root*) do servidor web (WebServer) da ESP32 (exemplo: `http://192.168.0.10/`).
+
+| Parte do código             | Tipo                  | Função                                                                                          |
+|-----------------------------|-----------------------|-------------------------------------------------------------------------------------------------|
+|`.send(200,<>,<>)`           | Código de status HTTP | '200' significa 'OK'. Ou seja, a requisição de acesso à *root* foi bem-sucedida.                  |
+|`.send(<>,"text/html",<>)`   | Definição do tipo de conteúdo enviado ao navegador  | `text/html` é o *MIME type* (ou *Content-Type*) que o servidor informa ao navegador sobre o tipo de dado que está sendo enviado na resposta. `text/html` diz ao navegador que o conteúdo retornado é um código HTML e deve ser interpretado/renderizado como uma página web. |
+|`.send(<>, <>, html)`| Conteúdo                      | Quando algum cliente acessar a página principal da ESP32 (raíz, ou *root*, ou `/`), envia como resposta o código de página HTML na variável `html` |
   
 
 </details>
