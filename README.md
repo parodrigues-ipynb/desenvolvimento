@@ -888,7 +888,17 @@ Neste dia foi definida a estratégia de comunicação e acesso remoto do B1-M1.
   
   Na aba `board_config.h` foi selecionada a board `#define CAMERA_MODEL_AI_THINKER // Has PSRAM` tirando essa linha dos comentários e deixando as demais comentadas.
   
-  Na aba `CameraWebServer.ino` foram inseridos os credenciais da rede Wi-Fi local e a variável `config.frame_size` teve seu valor ajustado para `FRAMESIZE_QVGA`. Esse *framesize* é apropriado para uma transmissão rápida e sem muita qualidade - ideal para o projeto.
+  Na aba `CameraWebServer.ino` foram inseridos os credenciais da rede Wi-Fi local nas variáveis `const char *ssid` e `const char *password`.
+  
+  A variável `config.frame_size` teve seu valor ajustado para `FRAMESIZE_QVGA`. Esse *framesize* é apropriado para uma transmissão rápida e sem muita qualidade - ideal para o projeto.
+
+  Logo abaixo da linha `sensor_t *s = esp_camera_sensor_get();` foram inseridas essas duas linhas:
+  ```ino
+  s->set_vflip(s, 1);
+  s->set_hmirror(s, 0);
+  ```
+
+  Essas linhas são responsáveis por fazer a imagem captada pela câmera espelhar vertical e horizontalmente.
 
   ![Jumper entre GPIO0 e GND](https://i.imgur.com/QdL94Oa.jpeg)
   
