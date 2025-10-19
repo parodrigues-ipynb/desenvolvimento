@@ -961,10 +961,10 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
   | `server()`       | Nome do objeto        | `WebServer` é o "molde para servidores". `server()` é o servidor que estamos criando.             |
   | `80`             | Argumento ou parâm.   | O número `80` é a porta padrão para tráfego de internet não criptografado (*HTTP - HyperText Transfer Protocol*). Ao passar o argumento `80`, estamos instruíndo o objeto `server()` a "ouvir" as requisições que chegam nessa porta. Quando um navegador web tenta se conectar à ESP32 usando o endereço IP dela, o navegador fará isso na porta `80` por padrão, permitindo que a comunicação entre o servidor e o cliente (navegador) seja estabelecida.    *Nota:* No contexto de redes de computadores, 'porta' é um número que identifica um serviço ou aplicação específica em um computador ou dispositivo. Dá para pensar em 'porta' como sendo o 'número da sala onde ocorrem determinadas atividades'. As portas são essenciais pois permitem a um dispositivo responda diversas requisições em diferentes portas simultaneamente. Inclusive, a porta para HTTPS (tráfego criptografado, seguro) é `443`. |
   
-  EXEMPLO PRÁTICO
-  → Digamos que o IP da ESP32 seja `192.168.1.100`
-  → Se a gente digitar `http://192.168.1.100` em um navegador, esse navegador irá tentar, por padrão, se conectar à porta `80` da ESP32
-  → O objeto `server()` na ESP32 irá "receber" ou "escutar" essa requisição e, dependendo do resto do código, responderá com uma página HTML ou
+  **Exemplo prático**
+  * Digamos que o IP da ESP32 seja `192.168.1.100`;
+  * Se a gente digitar `http://192.168.1.100` em um navegador, esse navegador irá tentar, por padrão, se conectar à porta `80` da ESP32;
+  * O objeto `server()` na ESP32 irá "receber" ou "escutar" essa requisição e, dependendo do resto do código, responderá com uma página HTML ou
   outra informação qualquer.
 
   ```ino
