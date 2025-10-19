@@ -844,6 +844,8 @@ O controle temporal dos testes das funções de movimento foi implementado utili
 
 Nestes dias foi definida a estratégia de comunicação e acesso remoto do B1-M1.
 
+A ESP32-CAM foi configurada e o seu funcionamento instalada no B1-M1 foi posto à prova.
+
 🎥 [Vídeo B1-M1 rodando com câmera ESP32-CAM fazendo streaming](https://imgur.com/a/8KsLpTI)
 
 <details>
