@@ -891,6 +891,10 @@ Neste dia foi definida a estratégia de comunicação e acesso remoto do B1-M1.
   Na aba `CameraWebServer.ino` foram inseridos os credenciais da rede Wi-Fi local e a variável `config.frame_size` teve seu valor ajustado para `FRAMESIZE_QVGA`. Esse *framesize* é apropriado para uma transmissão rápida e sem muita qualidade - ideal para o projeto.
   
   A ESP32-CAM foi conectada ao computador por cabo, um jumper foi colocado entre os pinos GPIO0 e GND e o botão Flash foi pressionado brevemente quando o flash começou após a compilação completar.
+
+  Depois de completo o flash, a ESP32-CAM imprimiu pelo monitor serial o IP `192.168.0.11`. Foi acessado o link `http://192.168.0.11:81/stream` para verificar se o streaming estava funcionando e, para nossa alegria, estava!
+
+  ![Streaming funcionando](https://i.imgur.com/X4qUtl7.jpeg)
 </details>
 
 
