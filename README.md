@@ -889,12 +889,20 @@ Neste dia foi definida a estratégia de comunicação e acesso remoto do B1-M1.
   Na aba `board_config.h` foi selecionada a board `#define CAMERA_MODEL_AI_THINKER // Has PSRAM` tirando essa linha dos comentários e deixando as demais comentadas.
   
   Na aba `CameraWebServer.ino` foram inseridos os credenciais da rede Wi-Fi local e a variável `config.frame_size` teve seu valor ajustado para `FRAMESIZE_QVGA`. Esse *framesize* é apropriado para uma transmissão rápida e sem muita qualidade - ideal para o projeto.
+
+  ![Jumper entre GPIO0 e GND](https://i.imgur.com/QdL94Oa.jpeg)
   
-  A ESP32-CAM foi conectada ao computador por cabo, um jumper foi colocado entre os pinos GPIO0 e GND e o botão Flash foi pressionado brevemente quando o flash começou após a compilação completar.
+  A ESP32-CAM foi conectada ao computador por cabo e um jumper foi colocado entre os pinos GPIO0 e GND, conforme a imagem acima. Após pressionar o botão `Upload` na ArduinoIDE, o botão `Flash` da ESP32-CAM foi pressionado brevemente após a compilação do ArduinoIDE completar para iniciar o modo flash da ESP32-CAM.
+
+  🎥 [O processo descrito acima pode ser verificado nesse vídeo](https://imgur.com/a/ZGpJELn)
 
   Depois de completo o flash, a ESP32-CAM imprimiu pelo monitor serial o IP `192.168.0.11`. Foi acessado o link `http://192.168.0.11:81/stream` para verificar se o streaming estava funcionando e, para nossa alegria, estava!
 
   ![Streaming funcionando](https://i.imgur.com/X4qUtl7.jpeg)
+
+  A ESP32-CAM foi prontamente montada no B1-M1 e foi verificado se era possível acessar o streaming enquanto o B1-M1 se movia.
+  
+  🎥 [O vídeo do funcionamento da ESP32-CAM no B1-M1 pode ser visto aqui](https://imgur.com/a/8KsLpTI).
 </details>
 
 
