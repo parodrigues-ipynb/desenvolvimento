@@ -877,6 +877,8 @@ A ESP32-CAM foi configurada e o seu funcionamento instalada no B1-M1 foi posto �
                                       ↓
                          ESP-32CAM (vídeo MJPEG)
   ```
+
+  ![Configurações ArduinoIDE](https://i.imgur.com/58JCrel.jpeg)
   
   As seguintes configurações foram utilizadas no ArduinoIDE para programação da ESP32-CAM:
   * `Tools → CPU Frequency: "240MHz (WiFi/BT)"`
@@ -884,6 +886,8 @@ A ESP32-CAM foi configurada e o seu funcionamento instalada no B1-M1 foi posto �
   * `Tools → Partition Scheme: "Huge APP (3MB No OTA/1MB SPIFFS)"`
   
   A board `AI Thinker ESP32-CAM` foi utilizada. Ela veio junto no pacote `esp32` da Espressif Systems no Boards Manager (`CTRL+SHIFT+B`) do ArduinoIDE.
+
+  ![Bibliotecas ESP32 no ArduinoIDE](https://i.imgur.com/byRoTxa.jpeg)
   
   A biblioteca da esp32 foi inserida da seguinte forma no ArduinoIDE:
   * `File → Preferences`, e então na linha `Additional boards manager URLs:` foi inserido `https://dl.espressif.com/dl/package_esp32_index.json`. Também foi inserido `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`.
