@@ -1002,7 +1002,7 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
 
   A linha `server.send(200, "text/html", html);` é típica em projetos de WebServer. 
 
-  A função é `send()` chamada quando algum cliente (navegador) acessa a raíz (*root*) do servidor web (WebServer) da ESP32 (exemplo: `http://192.168.0.10/`).
+  A função `send()` é chamada quando algum cliente (navegador) acessa a raíz (*root*) do servidor web (WebServer) da ESP32 (exemplo: `http://192.168.0.10/`).
 
 | Parte do código             | Tipo                  | Função                                                                                          |
 |-----------------------------|-----------------------|-------------------------------------------------------------------------------------------------|
