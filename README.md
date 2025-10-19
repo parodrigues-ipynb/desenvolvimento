@@ -840,9 +840,11 @@ O controle temporal dos testes das funções de movimento foi implementado utili
 
 ---
 
-#### 17/10/2025
+#### 17/10/2025 e 18/10/2025
 
-Neste dia foi definida a estratégia de comunicação e acesso remoto do B1-M1.
+Nestes dias foi definida a estratégia de comunicação e acesso remoto do B1-M1.
+
+🎥 [Vídeo B1-M1 rodando com câmera ESP32-CAM fazendo streaming](https://imgur.com/a/8KsLpTI)
 
 <details>
   <summary>📝 Memorial das estratégias adotadas [clique para expandir]</summary>
