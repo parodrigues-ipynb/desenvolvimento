@@ -1003,15 +1003,70 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
   A linha `server.send(200, "text/html", html);` é típica em projetos de WebServer. 
 
   A função `send()` é chamada quando algum cliente (navegador) acessa a raíz (*root*) do servidor web (WebServer) da ESP32 (exemplo: `http://192.168.0.10/`).
-
-| Parte do código             | Tipo                  | Função                                                                                          |
-|-----------------------------|-----------------------|-------------------------------------------------------------------------------------------------|
-|`.send(200,<>,<>)`           | Código de status HTTP | '200' significa 'OK'. Ou seja, a requisição de acesso à *root* foi bem-sucedida.                  |
-|`.send(<>,"text/html",<>)`   | Definição do tipo de conteúdo enviado ao navegador  | `text/html` é o *MIME type* (ou *Content-Type*) que o servidor informa ao navegador sobre o tipo de dado que está sendo enviado na resposta. `text/html` diz ao navegador que o conteúdo retornado é um código HTML e deve ser interpretado/renderizado como uma página web. |
-|`.send(<>, <>, html)`| Conteúdo                      | Quando algum cliente acessar a página principal da ESP32 (raíz, ou *root*, ou `/`), envia como resposta o código de página HTML na variável `html` |
   
+  | Parte do código             | Tipo                  | Função                                                                                          |
+  |-----------------------------|-----------------------|-------------------------------------------------------------------------------------------------|
+  |`.send(200,<>,<>)`           | Código de status HTTP | '200' significa 'OK'. Ou seja, a requisição de acesso à *root* foi bem-sucedida.                  |
+  |`.send(<>,"text/html",<>)`   | Definição do tipo de conteúdo enviado ao navegador  | `text/html` é o *MIME type* (ou *Content-Type*) que o servidor informa ao navegador sobre o tipo de dado que está sendo enviado na resposta. `text/html` diz ao navegador que o conteúdo retornado é um código HTML e deve ser interpretado/renderizado como uma página web. |
+  |`.send(<>, <>, html)`| Conteúdo                      | Quando algum cliente acessar a página principal da ESP32 (raíz, ou *root*, ou `/`), envia como resposta o código de página HTML na variável `html` |
 
+  ```ino
+  void setup() {
+    // Rede Wi-Fi
+    Serial.begin(115200);
+    WiFi.begin(SSID_REDE_WIFI, SENHA_REDE_WIFI);
+    Serial.print("Conectando o B1-M1 à rede Wi-Fi ");
+    Serial.print(SSID_REDE_WIFI);
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println("\nConexão estabelecida!");
+    Serial.print("IP da ESP32: ");
+    Serial.println(WiFi.localIP());
+  
+    server.on("/", handleRoot);
+    server.begin();
+    Serial.println("Servidor Wi-Fi do B1-M1 iniciado.");
+  }
+  ```
+  As linhas acima foram adicionadas para iniciar a conexão Wi-Fi com a rede informada na variável `SSID_REDE_WIFI`.
+
+  O IP da ESP32 é impresso no monitor da comunicação serial e então a linha `server.on("/", handleRoot)` configura que acessos de usuários à rota padrão devem chamar a função `handleRoot()`.
+
+  ```ino
+  void loop() {
+    unsigned long agora = millis(); // [ms]
+  
+    // ┌------------------------------------------┐
+    // |  Controle de movimento e sensoriamento   |
+    // └------------------------------------------┘
+  
+    // Verificação do movimento para trás
+    if (movendoTras) {
+      ...
+    }
+  
+    // Verificação do movimento de giro
+    if (movendoGiro) {
+      ...
+    }
+  
+    if (agora - ultimoMillis >= intervaloLeituras) {
+      ...
+    }
+  
+    // ┌------------------------------------------┐
+    // |  Processamento de requisições HTTP       |
+    // └------------------------------------------┘
+    server.handleClient();
+  }
+  ```
+  A linha com o método `server.handleClient();` da biblioteca `<WebServer.h>` foi adicionada no final da função `void loop()`. Ela faz o servidor receber as solicitações dos usuários (ou *clients*).
+  
 </details>
+
+
 
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
