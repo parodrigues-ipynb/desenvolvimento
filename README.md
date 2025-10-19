@@ -923,6 +923,55 @@ A ESP32-CAM foi configurada e o seu funcionamento instalada no B1-M1 foi posto �
   🎥 [O vídeo do funcionamento da ESP32-CAM no B1-M1 pode ser visto aqui](https://imgur.com/a/8KsLpTI).
 </details>
 
+---
+
+#### 19/10/2025
+
+Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma página HTML que contém o `<img src="http://<ip_esp32-cam>:81/stream">` para exibir o streaming da ESP32-CAM.
+
+💾 [Código versão 8](https://gist.github.com/parodrigues-ipynb/481f91f52f6bb0200ce5ec6a1855c48b)
+
+🎥 [Vídeo B1-M1 rodando com a versão 8](https://imgur.com/a/bDEAqPS)
+
+<details>
+  <summary>📝 Comentários sobre o código versão 8 [clique para expandir]</summary>
+
+  ```ino
+  #include <WiFi.h>
+  #include <WebServer.h>
+  
+  // Configurações rede Wi-Fi
+  const char* SSID_REDE_WIFI = "Internet do Pedrinho 2.4 GHz";
+  const char* SENHA_REDE_WIFI = "[conteúdo removido]";
+  const char* URL_STREAM_CAMERA = "http://192.168.0.11:81/stream";
+  WebServer server(80);
+  ```
+
+  Foram inseridas as linhas acima no código da ESP32 do B1-M1, junto com as bibliotecas `<WiFi.h>` e `<WebServer.h>`.
+
+  As variáveis `SSID_REDE_WIFI`, `SENHA_REDE_WIFI` e `URL_STREAM_CAMERA` são apenas parâmetros constantes de configuração. O ideal seria que essas informações estivessem em um arquivo `.cpp` separado, mas o grupo ainda não aprendeu como implementar isso e não é algo crucial para a etapa atual.
+
+  O tipo `const char*` é um ponteiro para caracteres constante. Ele foi utilizado porque as funções da biblioteca `<WiFi.h>` (como `WiFi.begin()`) esperam esse tipo de variável, e não objetos `String`.
+
+  A linha `WebServer server(80)`  cria um objeto do tipo `WebServer` configurado para utilizar o protocolo HTTP da porta `80`.
+
+  | PARTE DO CÓDIGO  | TIPO                  | FUNÇÃO                                                                                          |
+  |------------------|-----------------------|-------------------------------------------------------------------------------------------------|
+  | WebServer        | Classe de um objeto   | Molde ou tipo de dado que define as características ou comportamento de algo. Neste caso, a classe WebServer foi criada para lidar com as funcionalidades de um servidor web. NOTA: Esta classe está na biblioteca WebServer.h |
+  |------------------|-----------------------|-------------------------------------------------------------------------------------------------|
+  | server()         | Nome do objeto        | WebServer é o "molde para servidores". "server()" é o servidor que estamos criando.             |
+  |------------------|-----------------------|-------------------------------------------------------------------------------------------------|
+  | 80               | Argumento ou parâm.   | O número '80' é a porta padrão para tráfego de internet não criptografado (HTTP - HyperText Transfer Protocol). Ao passar o argumento '80', estamos instruíndo o objeto server() a "ouvir" as requisições que chegam nessa porta. Quando um navegador web tenta se conectar à ESP32 usando o endereço IP dela, o navegador fará isso na porta 80 por padrão, permitindo que a comunicação entre o servidor e o cliente (navegador) seja estabelecida. NOTA: No contexto de redes de computadores, 'porta' é um número que identifica um serviço ou aplicação específica em um computador ou dispositivo. Dá para pensar em 'porta' como sendo o 'número da sala onde ocorrem determinadas atividades'. As portas são essenciais pois permitem a um dispositivo responda diversas requisições em diferentes portas simultaneamente. Inclusive, a porta para HTTPS (tráfego criptografado, seguro) é 443. |
+  
+  EXEMPLO PRÁTICO
+  → Digamos que o IP da ESP32 seja `192.168.1.100`
+  → Se a gente digitar `http://192.168.1.100` em um navegador, esse navegador irá tentar, por padrão, se conectar à porta `80` da ESP32
+  → O objeto `server()` na ESP32 irá "receber" ou "escutar" essa requisição e, dependendo do resto do código, responderá com uma página HTML ou
+  outra informação qualquer.
+
+  
+
+</details>
 
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
