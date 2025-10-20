@@ -903,7 +903,7 @@ A ESP32-CAM foi configurada e o seu funcionamento instalada no B1-M1 foi posto �
   Logo abaixo da linha `sensor_t *s = esp_camera_sensor_get();` foram inseridas essas duas linhas:
   ```ino
   s->set_vflip(s, 1);
-  s->set_hmirror(s, 0);
+  s->set_hmirror(s, 1);
   ```
 
   Essas linhas são responsáveis por fazer a imagem captada pela câmera espelhar vertical e horizontalmente.
