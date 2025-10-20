@@ -951,8 +951,16 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
 
   As variáveis `SSID_REDE_WIFI`, `SENHA_REDE_WIFI` e `URL_STREAM_CAMERA` são apenas parâmetros constantes de configuração. O ideal seria que essas informações estivessem em um arquivo `.cpp` separado, mas o grupo ainda não aprendeu como implementar isso e não é algo crucial para a etapa atual.
 
-  O tipo `const char*` é um ponteiro para caracteres constante. Ele foi utilizado porque as funções da biblioteca `<WiFi.h>` (como `WiFi.begin()`) esperam esse tipo de variável, e não objetos `String`.
+  O tipo `const char*` é um ponteiro para caracteres constante. Ele foi utilizado porque as funções da biblioteca `<WiFi.h>` (como `WiFi.begin()`) esperam esse tipo de variável, e não objetos `String`. O uso de ponteiros evita conversões desnecessárias e economiza processamento.
 
+  Para fins didáticos, cabe mencionar que ponteiros são endereços físicos de memória. Eles indicam, portanto, uma área fixa da memória (geralmente a memória flash já que essas variáveis foram declaradas com `const`). Já `Strings` alocam memória dinamicamente conforme são alteradas ou atribuídas. Como microcontroladores geralmente têm pouca memória RAM, ponteiros costumam ser mais eficientes e devem ser preferidos em casos como os das variáveis que armazenam o SSID, a senha e a URL da câmera.
+
+  Há ainda outro tipo de variável para sequências de caracteres: o `char[]`, que cria vetores. Por exemplo, `char [] SSID = "Internet do Pedrinho 2.4GHz";` criaria um vetor cujos elemntos seriam os caracteres do SSID: `I`, `n`, `t`, `e`, `r`, `n`, `e`, `t`, ` `, `d`, `o`,... e assim por diante. O último elemento desse vetor seria preenchido por `\0`  para indicar o final do vetor. Portanto, o endereço físico apontado por `SSID` teria um valor ideal para armazenar o texto `Internet do Pedrinho 2.4GHz\0`.
+
+  Talvez a SSID mude. Digamos que eu adquirisse a Internet do Pedrinho Um Bilhão GHz. Eu não conseguiria utilizar o mesmo espaço de memória para armazenar esse novo valor de forma segura, sem o risco de sobrescrever outras informações importantes na memória.
+
+  Portanto, faz muito sentido que a biblioteca tenha essa predileção por ponteiros: eles tornam o processo todo mais seguro, eficiente e prático.
+  
   A linha `WebServer server(80)`  cria um objeto do tipo `WebServer` configurado para utilizar o protocolo HTTP da porta `80`.
 
   | Parte do código  | Tipo                  | Função                                                                                          |
@@ -1101,7 +1109,7 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
   ![Pacote IP](https://i.imgur.com/5jAjZOZ.jpeg)
   
   A internet é composta por milhares de roteadores e enlaces físicos (cabos, fibra, Wi-Fi, rádio...). Durante o transporte dos pacotes, falhas comuns e inevitáveis em redes grandes como a internet são:
-  * os pacotes atrasar (latência);
+  * os pacotes atrasarem (latência);
   * os pacotes chegarem fora de ordem;
   * algum roteador descartar pacotes se estiver sobrecarregado (congestionamento);
   * alguma interferência eletromagnética corromper bits (erro de transmissão);
