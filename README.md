@@ -1118,11 +1118,19 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
 
   ![TCP vs. UDP](https://i.imgur.com/3Lm5mss.jpeg)
 
-  Normalmente TCP é utilizado para dados que não podem se perder (HTTP, WebSocket, SSH), enquanto que UDP é usado para dados que podem ser descartados sem problemas (streaming de vídeo, jogos online).
+  Normalmente TCP é utilizado para dados que não podem se perder, enquanto que UDP é usado para dados que podem ser descartados sem problemas.
+
+  Em resumo,
+  |Protocolo | Tipo          | Reenvia pacotes? | Ordem dos pacotes garantida? | Exemplo de uso                |
+  |----------|---------------|:----------------:|:----------------------------:|-------------------------------|
+  |TCP       | Confiável     | Sim              | Sim                          | Web, WebSocket, HTTP          |
+  |UDP       | Não confiável | Não              | Não                          | Streaming, jogos online, VoIP |
 
   O meme abaixo ajudou os alunos a fixar o conteúdo sobre UDP e TCP.
 
-  ![Meme didático](https://i.imgur.com/OnRLgFh.jpeg)
+  ![Meme didático](https://i.imgur.com/xA05ZFi.jpeg)
+
+  
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
