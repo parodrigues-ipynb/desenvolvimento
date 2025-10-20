@@ -1094,45 +1094,42 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
 
   `<AsyncTCP.h>` implementa uma camada TCP assíncrona para a ESP32.
 
-  <details>
-    <summary>❓ Explicação sobre o que é TCP [clique para expandir]</summary>
+  TCP significa *Transmission Control Protocol*, ou *Protocolo de Controle de Transmissão*. TCP é o protocolo de transporte de dados usado pela internet para garantir que os dados enviados cheguem ao destino.
+  
+  Por exemplo, digamos que o navegador esteja enviando dados para a ESP32. Esses dados são divididos em pacotes IP - pequenos blocos numerados que viajam por roteadores e redes diferentes até chegar ao destino, que é a ESP32. Abaixo está uma imagem exemplo de um pacote.
+  
+  ![Pacote IP](https://i.imgur.com/5jAjZOZ.jpeg)
+  
+  A internet é composta por milhares de roteadores e enlaces físicos (cabos, fibra, Wi-Fi, rádio...). Durante o transporte dos pacotes, falhas comuns e inevitáveis em redes grandes como a internet são:
+  * os pacotes atrasar (latência);
+  * os pacotes chegarem fora de ordem;
+  * algum roteador descartar pacotes se estiver sobrecarregado (congestionamento);
+  * alguma interferência eletromagnética corromper bits (erro de transmissão);
+  * conexões Wi-Fi falharem temporariamente em função de sinal fraco ou ruído.
+  
+  O TCP foi projetado para lidar com essas imperfeições. Ele:
+  * numera cada pacote para que o receptor saiba a ordem correta dos pacotes;
+  * faz o destino confirmar o recebimento (ACK - *acknowledge*, ou *reconhecimento*) dos pacotes enviando mensagens como "recebi o pacote X";
+  * se um tempo limite for excedido sem ACK desde o envio, faz o remetente reenviar pacotes não reconhecidos;
+  * verifica a integridade de cada pacote através de uma [soma de verificação (*checksum*)](https://pt.wikipedia.org/wiki/Soma_de_verifica%C3%A7%C3%A3o);
+  * remonta os dados no destino seguindo a ordem e garantindo a completude dos pacotes.
+  
+  Existem protocolos que não aplicam controle de erros, como o UDP (*User Datagram Protocol*, ou *Protocolo de Datagrama do Usuário*). O fato do envio não depender de esperar confirmações torna a comunicação mais rápida.
+  
+  ![TCP vs. UDP](https://i.imgur.com/3Lm5mss.jpeg)
+  
+  Normalmente TCP é utilizado para dados que não podem se perder, enquanto que UDP é usado para dados que podem ser descartados sem problemas.
+  
+  Em resumo,
+  |Protocolo | Tipo          | Reenvia pacotes? | Ordem dos pacotes garantida? | Exemplo de uso                |
+  |----------|---------------|:----------------:|:----------------------------:|-------------------------------|
+  |TCP       | Confiável     | Sim              | Sim                          | Web, WebSocket, HTTP          |
+  |UDP       | Não confiável | Não              | Não                          | Streaming, jogos online, VoIP |
+  
+  O meme abaixo ajudou os alunos a fixar o conteúdo sobre UDP e TCP.
+  
+  ![Meme didático](https://i.imgur.com/xA05ZFi.jpeg)
 
-    TCP significa *Transmission Control Protocol*, ou *Protocolo de Controle de Transmissão*. TCP é o protocolo de transporte de dados usado pela internet para garantir que os dados enviados cheguem ao destino.
-  
-    Por exemplo, digamos que o navegador esteja enviando dados para a ESP32. Esses dados são divididos em pacotes IP - pequenos blocos numerados que viajam por roteadores e redes diferentes até chegar ao destino, que é a ESP32. Abaixo está uma imagem exemplo de um pacote.
-  
-    ![Pacote IP](https://i.imgur.com/5jAjZOZ.jpeg)
-  
-    A internet é composta por milhares de roteadores e enlaces físicos (cabos, fibra, Wi-Fi, rádio...). Durante o transporte dos pacotes, falhas comuns e inevitáveis em redes grandes como a internet são:
-    * os pacotes atrasar (latência);
-    * os pacotes chegarem fora de ordem;
-    * algum roteador descartar pacotes se estiver sobrecarregado (congestionamento);
-    * alguma interferência eletromagnética corromper bits (erro de transmissão);
-    * conexões Wi-Fi falharem temporariamente em função de sinal fraco ou ruído.
-  
-    O TCP foi projetado para lidar com essas imperfeições. Ele:
-    * numera cada pacote para que o receptor saiba a ordem correta dos pacotes;
-    * faz o destino confirmar o recebimento (ACK - *acknowledge*, ou *reconhecimento*) dos pacotes enviando mensagens como "recebi o pacote X";
-    * se um tempo limite for excedido sem ACK desde o envio, faz o remetente reenviar pacotes não reconhecidos;
-    * verifica a integridade de cada pacote através de uma [soma de verificação (*checksum*)](https://pt.wikipedia.org/wiki/Soma_de_verifica%C3%A7%C3%A3o);
-    * remonta os dados no destino seguindo a ordem e garantindo a completude dos pacotes.
-  
-    Existem protocolos que não aplicam controle de erros, como o UDP (*User Datagram Protocol*, ou *Protocolo de Datagrama do Usuário*). O fato do envio não depender de esperar confirmações torna a comunicação mais rápida.
-  
-    ![TCP vs. UDP](https://i.imgur.com/3Lm5mss.jpeg)
-  
-    Normalmente TCP é utilizado para dados que não podem se perder, enquanto que UDP é usado para dados que podem ser descartados sem problemas.
-  
-    Em resumo,
-    |Protocolo | Tipo          | Reenvia pacotes? | Ordem dos pacotes garantida? | Exemplo de uso                |
-    |----------|---------------|:----------------:|:----------------------------:|-------------------------------|
-    |TCP       | Confiável     | Sim              | Sim                          | Web, WebSocket, HTTP          |
-    |UDP       | Não confiável | Não              | Não                          | Streaming, jogos online, VoIP |
-  
-    O meme abaixo ajudou os alunos a fixar o conteúdo sobre UDP e TCP.
-  
-    ![Meme didático](https://i.imgur.com/xA05ZFi.jpeg)
-  </details>
   
 </details>
   
