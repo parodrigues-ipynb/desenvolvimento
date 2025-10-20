@@ -1130,7 +1130,163 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
   
   ![Meme didático](https://i.imgur.com/xA05ZFi.jpeg)
 
+  Já o termo "comunicação assíncrona" significa que o programa não espera que uma operação termine para continuar sua execução.
+
+  Na comunicação síncrona (bloqueante), o B1-M1 iria "congelar" durante a comunicação, pois iria **esperar cada operação terminar para dar sequência**. Quando ele atendesse a uma requisição da interface web, a ESP32 travaria momentaneamente a leitura dos sensores ultrassônicos ou o controle dos motores A e B. Isso é muito ruim para um robô multitarefas.
+
+  Na comunicação assíncrona (não bloqueante), o B1-M1 continuaria ativo durante a comunicação, pois iria **utilizar eventos** para chamar funções de callback somente no momento de chegada dos dados, sem travar o restante do código durante o aguardo dos dados.
+
+  Com a biblioteca `<AsyncTCP.h>` é possível manter o servidor HTTP aceitando conexões, manter os WebSockets recebendo comandos e manter o B1-M1 realizando o sensoriamento e controle dos motores.
+
+  A biblioteca `<ESPAsyncWebServer.h>` é a versão assíncrona da `<WebServer.h>`.
+
+  As linhas `AsyncWebServer server(80);` e `AsyncWebSocket ws("/ws");` inicializam objetos para criação do WebServer assíncrono e os WebSockets.
+
+  WebSockets são um protocolo de comunicação bidirecional e contínua entre cliente e servidor. Eles operam sobre TCP.
+
+  | Aspecto               | HTTP                                                       | WebSocket                                                                       |
+  |-----------------------|------------------------------------------------------------|---------------------------------------------------------------------------------|
+  | Modelo de comunicação | Unidirecional / Requisição (Cliente) → Resposta (Servidor) | Bidirecional                                                                    |
+  | Conexão               | Abre e fecha a cada requisição                             | Conexão única e persistente                                                     |
+  | Latência              | Alta (*handshake* e cabeçalhos a cada requisição)          | Baixa (canal aberto após o *handshake* inicial)                                 |
+  | Uso típico            | Páginas web, APIs REST, requisições ocasionais             | Aplicações em tempo real (chats, telemetria, jogos online, controle remoto)     |
+  | Transporte            | HTTP/HTTPS                                                 | TCP (com *handshake* inicial via HTTP, depois muda de protocolo para WebSocket) |
+
+  Ou seja, HTTP é ideal para trocas ocasionais de dados (*pull*), enquanto que WebSocket é projetado para comunicação contínua e instantânea (*push/pull* em tempo real).
+
+  ```ino
+  void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+    if (type == WS_EVT_DATA) {
+      String cmd = String((char*)data).substring(0, len);
+      cmd.trim();
+      Serial.println("Comando recebido: " + cmd);
   
+      if (cmd == "frente") {
+        modoManual = true;
+        moverFrente();
+      } else if (cmd == "tras") {
+        modoManual = true;
+        moverTras();
+      } else if (cmd == "esquerda") {
+        modoManual = true;
+        girarEsquerda();
+      } else if (cmd == "direita") {
+        modoManual = true;
+        girarDireita();
+      } else if (cmd == "parar") {
+        modoManual = true;
+        parar();
+      } else if (cmd == "automatico") {
+        modoManual = false;
+      }
+    }
+    Serial.println(modoManual ? "Modo manual do B1-M1 ativado." : "Modo automático do B1-M1 ativado.");
+  }
+  ```
+  A função `void onWsEvent()` foi adicionada ao código.
+
+  Essa função é um manipulador de eventos do protocolo WebSocket. É ela quem define o que a ESP32 deve fazer quando um evento ocorre na conexão WebSocket. No caso do B1-M1, ela está tratando os comandos enviados ao robô B1-M1 por controle remoto via WebSocket.
+
+  A função tem a seguinte assinatura:
+  * `server`: ponteiro para o servidor WebSocket;
+  * `client`: ponteiro para o cliente que enviou a mensagem;
+  * `type`: tipo do evento (conexão, desconexão, erro ou dados recebidos);
+  * `arg`: argumento adicional (usado em eventos específicos);
+  * `data`: ponteiro para os dados recebidos (mensagem);
+  * `len`: tamanho da mensagem.
+
+  A linha `if (type == WS_EVT_DATA)` descreve bem o funcionamento do protocolo WebSocket com TCP assíncrono: ações somente são tomadas em caso de eventos (WS_EVT_DATA) específicos.
+
+  As linhas `String cmd  String((char*)data).substring(0, len);` e `cmd.trim();` convertem os bytes recebidos em `data` para o tipo `String`. `.trim()` remove os espaços em branco no começo e no final da mensagem.
+
+  ```ino
+  const char paginaHTML[] PROGMEM = R"rawliteral(
+    <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset = "utf-8">
+            <title>B1-M1</title>
+            <style>
+              body { text-align: center; background-color: #222; color: white; font-family: sans-serif; }
+              button { width: 100px; height: 50px; margin: 5px; font-size: 16px; }
+              img { width: 90%; max-width: 480px; border: 2px solid #444; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <h2>Stream da ESP32-CAM</h2>
+            <img id="cam" src="{{URL_ESP32_CAM}}">
+            <h2>Comandos para o B1-M1</h2>
+            <div>
+              <button onclick="enviar('frente')">Frente</button><br>
+              <button onclick="enviar('esquerda')">Esquerda</button>
+              <button onclick="enviar('parar')">Parar</button>
+              <button onclick="enviar('direita')">Direita</button><br>
+              <button onclick="enviar('tras')">Trás</button><br>
+              <button onclick="enviar('automatico')">Modo automático</button>
+            </div>
+            <script>
+              const ws = new WebSocket("ws://" + location.host + "/ws");
+              function enviar(cmd){ ws.send(cmd); }
+            </script>
+          </body>
+        </html>
+  )rawliteral";
+  ```
+  A página HTML teve sua estrutura armazenada desta vez numa variável própria na linha `const char paginaHTML[] PROGMEM`.
+
+  `const char paginaHTML[]` define uma array constante de caracteres: uma String. Como `[]` está vazio, o compilador calcula o tamanho automaticamente.
+
+  Por exemplo, `const char texto[] = "ABC";` é uma array de 4 elementos: `A`, `B`, `C` e `\0`, que é o terminador nulo da array.
+
+  `PROGMEM` é uma diretiva que instrui ao compilador que ele deve armazenar a variável na memória flash ao invés da memória RAM. Essa diretiva é muito útil para poupar espaço da memória RAM ao lidar com variáveis muito grandes como é o caso da `paginaHTML`.
+
+  ```ino
+  void setup() {
+    // Rede Wi-Fi
+    Serial.begin(115200);
+    WiFi.begin(SSID_REDE_WIFI, SENHA_REDE_WIFI);
+    Serial.print("Conectando o B1-M1 à rede Wi-Fi ");
+    Serial.print(SSID_REDE_WIFI);
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println("\nConexão estabelecida!");
+    Serial.print("IP da ESP32: ");
+    Serial.println(WiFi.localIP());
+    // WebSocket
+    ws.onEvent(onWsEvent);
+    server.addHandler(&ws);
+    // Página principal
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+      String html = FPSTR(paginaHTML);
+      html.replace("{{URL_ESP32_CAM}}", URL_STREAM_CAMERA);
+      request->send(200, "text/html", html);
+    });
+    server.begin();
+    Serial.println("Servidor WebSocket do B1-M1 iniciado!");
+  ```
+  Dentro da função `void setup()` houve o acréscimo da lógica de eventos do WebSocket.
+
+  No bloco do `server.on()` há uma lógica para substituir a ocorrência de `{{URL_ESP32_CAM}}` na array `paginaHTML` por `URL_STREAM_CAMERA`.
+
+  Na linha `request->send(200, "text/html", html);` há o uso do operador `->`, que é utilizado quando temos um ponteiro. Por exemplo,
+
+  ```ino
+  class Cachorro {
+    public:
+      void latir() { Serial.println("Au au!"); }
+  };
+
+  Cachorro bernadete;       // Esse objeto é minha cadela, que é um cachorro
+  Cachorro* b = &bernadete; // Ponteiro para o objeto
+
+  bernadete.latir();    // Acesso direto que faz a Bernadete latir
+  b->latir();           // Acesso via ponteiro que faz a Bernadete latir. É equivalente a (*b).latir()
+  ```
+
+  No caso dessa linha, `request` é um ponteiro para um objeto `AsyncWebServerRequest`. `->send()` chama o método `send()` desse objeto. Esse método chama a resposta HTTP padrão conforme já vimos no código anterior.
+
 </details>
   
 
