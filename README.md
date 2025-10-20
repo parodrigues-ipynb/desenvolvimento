@@ -1272,7 +1272,7 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
 
   Na linha `request->send(200, "text/html", html);` há o uso do operador `->`, que é utilizado quando temos um ponteiro. Por exemplo,
 
-  ```ino
+  ```cpp
   class Cachorro {
     public:
       void latir() { Serial.println("Au au!"); }
