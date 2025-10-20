@@ -1072,7 +1072,7 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
 
 💾 [Código versão 9](https://gist.github.com/parodrigues-ipynb/5c16661706b89709aed75a170137865f)
 
-🎥 [Vídeo B1-M1 rodando com a versão 9]()
+🎥 [Vídeo B1-M1 rodando com a versão 9](https://imgur.com/a/lSfCcor)
 
 <details>
   <summary>📝 Comentários sobre o código versão 9 [clique para expandir]</summary>
