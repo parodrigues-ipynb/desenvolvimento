@@ -1066,8 +1066,63 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
   
 </details>
 
+---
 
+#### 19/10/2025
 
+💾 [Código versão 9](https://gist.github.com/parodrigues-ipynb/5c16661706b89709aed75a170137865f)
+
+🎥 [Vídeo B1-M1 rodando com a versão 9]()
+
+<details>
+  <summary>📝 Comentários sobre o código versão 9 [clique para expandir]</summary>
+
+  ```ino
+  #include <WiFi.h>
+  #include <AsyncTCP.h>
+  #include <ESPAsyncWebServer.h>
+  
+  // Configurações rede Wi-Fi
+  const char* SSID_REDE_WIFI = "Internet do Pedrinho 2.4 GHz";
+  const char* SENHA_REDE_WIFI = "cachorronuclear";
+  const char* URL_STREAM_CAMERA = "http://192.168.0.11:81/stream";
+  AsyncWebServer server(80);
+  AsyncWebSocket ws("/ws");
+  bool modoManual = false; // Flag para verificar se algum usuário do WebServer está no modo manual do B1-M1
+  ```
+  As bibliotecas `<AsyncTCP.h>` e `<ESPAsyncWebServer.h>` foram adicionadas no cabeçalho do código do B1-M1.
+
+  `<AsyncTCP.h>` implementa uma camada TCP assíncrona para a ESP32.
+
+  TCP significa *Transmission Control Protocol*, ou *Protocolo de Controle de Transmissão*. TCP é o protocolo de transporte de dados usado pela internet para garantir que os dados enviados cheguem ao destino.
+
+  Por exemplo, digamos que o navegador esteja enviando dados para a ESP32. Esses dados são divididos em pacotes IP - pequenos blocos numerados que viajam por roteadores e redes diferentes até chegar ao destino, que é a ESP32. Abaixo está uma imagem exemplo de um pacote.
+
+  ![Pacote IP](https://i.imgur.com/5jAjZOZ.jpeg)
+
+  A internet é composta por milhares de roteadores e enlaces físicos (cabos, fibra, Wi-Fi, rádio...). Durante o transporte dos pacotes, falhas comuns e inevitáveis em redes grandes como a internet são:
+  * os pacotes atrasar (latência);
+  * os pacotes chegarem fora de ordem;
+  * algum roteador descartar pacotes se estiver sobrecarregado (congestionamento);
+  * alguma interferência eletromagnética corromper bits (erro de transmissão);
+  * conexões Wi-Fi falharem temporariamente em função de sinal fraco ou ruído.
+
+  O TCP foi projetado para lidar com essas imperfeições. Ele:
+  * numera cada pacote para que o receptor saiba a ordem correta dos pacotes;
+  * faz o destino confirmar o recebimento (ACK - *acknowledge*, ou *reconhecimento*) dos pacotes enviando mensagens como "recebi o pacote X";
+  * se um tempo limite for excedido sem ACK desde o envio, faz o remetente reenviar pacotes não reconhecidos;
+  * verifica a integridade de cada pacote através de uma [soma de verificação (*checksum*)](https://pt.wikipedia.org/wiki/Soma_de_verifica%C3%A7%C3%A3o);
+  * remonta os dados no destino seguindo a ordem e garantindo a completude dos pacotes.
+
+  Existem protocolos que não aplicam controle de erros, como o UDP (*User Datagram Protocol*, ou *Protocolo de Datagrama do Usuário*). O fato do envio não depender de esperar confirmações torna a comunicação mais rápida.
+
+  ![TCP vs. UDP](https://i.imgur.com/3Lm5mss.jpeg)
+
+  Normalmente TCP é utilizado para dados que não podem se perder (HTTP, WebSocket, SSH), enquanto que UDP é usado para dados que podem ser descartados sem problemas (streaming de vídeo, jogos online).
+
+  O meme abaixo ajudou os alunos a fixar o conteúdo sobre UDP e TCP.
+
+  ![Meme didático](https://i.imgur.com/OnRLgFh.jpeg)
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
