@@ -382,7 +382,7 @@ A função `analogWrite()` é uma função padrão a API Arduino, mas não é na
 
 Decidiu-se utilizar o LEDC já que ela é nativa da ESP32 e já familiariza os alunos com as funções.
 
-É possível controlar frequência e resolução com `analogWrite()` através de `analogWriteFrequency()` e `analogWriteResolution()`. Portanto, realmente parece que o uso de `analogWrite()` ou `ledcAttach/Write()` é uma questão de gosto.
+É possível controlar frequência e resolução com `analogWrite()` através de `analogWriteFrequency()` e `analogWriteResolution()`. Porém, esse controle afeta todos os canais PWM simultaneamente. A vantagem do LEDC é que ele permite especificar frequências e resoluções distintas para cada canal.
 
 <details>
   <summary>📝 Comentários sobre o código versão 2 [clique para expandir]</summary>
@@ -1297,6 +1297,167 @@ Nesta versão foi implementado um WebServer na ESP32, que passou a hospedar uma 
 
   No caso dessa linha, `request` é um ponteiro para um objeto `AsyncWebServerRequest`. `->send()` chama o método `send()` desse objeto. Esse método chama a resposta HTTP padrão conforme já vimos no código anterior.
 
+</details>
+
+---
+
+### 20/10/2025
+
+Nesta versão foram adicionadas funções e trechos de código em funções já existentes para implementar o funcionamento da telemetria do B1-M1 através da página HTML do WebServer assíncrono WebSocket.
+
+💾 [Código versão 10](https://gist.github.com/parodrigues-ipynb/958ebaa8788f99ceea95b4e497a6b2e0)
+
+🎥 [Vídeo B1-M1 rodando com a versão 10]()
+
+<details>
+  <summary></summary>
+
+  ```ino
+  // LM393 - Sensor de velocidade encoder
+  #define SENSOR_VELOCIDADE_MOTOR_A 34
+  #define SENSOR_VELOCIDADE_MOTOR_B 35
+  volatile unsigned long pulsosMotorA = 0;
+  unsigned long pulsosA = 0;                // Clone de armazenamento
+  volatile unsigned long pulsosMotorB = 0;
+  unsigned long pulsosB = 0;                // Clone de armazenamento
+  float distancia = 0;
+  ```
+  As variáveis `pulsosA`, `pulsosB` e `distancia` passaram a ter escopo global para que seu uso possa ser compartilhado com a telemetria. Antes essas variáveis estavam dentro do `void loop()`, no seguinte trecho:
+
+  ```ino
+  distancia = medirDistancia(); // [cm]
+
+  // LM393 - Sensor de velocidade encoder
+  noInterrupts();
+  pulsosA = pulsosMotorA;
+  pulsosB = pulsosMotorB;
+  pulsosMotorA = 0;
+  pulsosMotorB = 0;
+  interrupts();
+  ```
+
+  ```ino
+  const char paginaHTML[] PROGMEM = R"rawliteral(
+    <!DOCTYPE html>
+    <html>
+  
+    <head>
+        <meta charset="utf-8">
+        <title>B1-M1</title>
+        <style>
+            body {
+                text-align: center;
+                background-color: #222;
+                color: white;
+                font-family: sans-serif;
+            }
+  
+            button {
+                width: 100px;
+                height: 50px;
+                margin: 5px;
+                font-size: 16px;
+            }
+  
+            .painel {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                gap: 20px;
+                margin-top: 20px;
+            }
+  
+            .painel img {
+                width: 480px;
+                max-width: 90%;
+                border: 2px solid #444;
+            }
+  
+            .coluna-lateral {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+  
+            .telemetria {
+                text-align: left;
+                background-color: #333;
+                border: 1px solid #444;
+                padding: 15px;
+                width: 250px;
+                border-radius: 8px;
+            }
+  
+            @media (max-width: 700px) {
+                .painel {
+                    flex-direction: column;
+                    align-items: center;
+                }
+  
+                .telemetria {
+                    width: 90%;
+                }
+            }
+        </style>
+    </head>
+  
+    <body>
+        <h2>Streaming do B1-M1</h2>
+  
+        <div class="painel">
+            <!-- Imagem à esquerda -->
+            <img id="cam" src="{{URL_ESP32_CAM}}">
+  
+            <!-- Lateral direita com telemetria e botões -->
+            <div class="coluna-lateral">
+                <div class="telemetria" id="info">Aguardando dados de telemetria...</div>
+                <div>
+                    <h3>Comandos</h3>
+                    <button onclick="enviar('frente')">Frente</button><br>
+                    <button onclick="enviar('esquerda')">Esquerda</button>
+                    <button onclick="enviar('parar')">Parar</button>
+                    <button onclick="enviar('direita')">Direita</button><br>
+                    <button onclick="enviar('tras')">Trás</button><br>
+                    <button onclick="enviar('automatico')">Modo automático</button>
+                </div>
+            </div>
+        </div>
+  
+        <script>
+            const ws = new WebSocket("ws://" + location.host + "/ws");
+            function enviar(cmd) { ws.send(cmd); }
+            ws.onmessage = (event) => {
+                const d = JSON.parse(event.data);
+                document.getElementById("info").innerHTML =
+                    `Distância: ${d.distancia} cm<br>` +
+                    `Pulsos motor A: ${d.pulsosA} | Pulsos motor B: ${d.pulsosB}<br>` +
+                    `Modo atual: ${d.modo}`;
+            };
+        </script>
+    </body>
+  
+    </html>
+  )rawliteral";
+  ```
+  O layout da página HTML do B1-M1 teve modificações para que a exibição do streaming, da telemetria e dos comandos de movimento fique contida numa tela de exibição de navegador *desktop*.
+
+  ```ino
+  // Telemetria
+  void enviarTelemetria() {
+    if (ws.count() == 0) return;
+  
+    String dados = "{";
+    dados += "\"distancia\":" + String(distancia, 1) + ",";
+    dados += "\"pulsosA\":" + String(pulsosA) + ",";
+    dados += "\"pulsosB\":" + String(pulsosB) + ",";
+    dados += "\"modo\":\"" + String(modoManual ? "manual" : "automatico") + "\"";
+    dados += "}";
+  
+    ws.textAll(dados);
+  }
+  ```
+  A função `void enviarTelemetria()` foi criada para comunicar através do protocolo WebSocket os dados da telemetria para exibição na página HTML
 </details>
   
 
