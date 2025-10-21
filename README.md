@@ -1310,7 +1310,7 @@ Nesta versão foram adicionadas funções e trechos de código em funções já 
 🎥 [Vídeo B1-M1 rodando com a versão 10]()
 
 <details>
-  <summary></summary>
+  <summary>📝 Comentários sobre o código versão 10 [clique para expandir]</summary>
 
   ```ino
   // LM393 - Sensor de velocidade encoder
