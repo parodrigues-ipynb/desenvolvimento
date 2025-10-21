@@ -1458,8 +1458,77 @@ Nesta versão foram adicionadas funções e trechos de código em funções já 
   }
   ```
   A função `void enviarTelemetria()` foi criada para comunicar através do protocolo WebSocket os dados da telemetria para exibição na página HTML
-</details>
+</details>.
+
+  A variável `String dados` contém uma concatenação dos dados. Embora tenha um resultado mais legível para os autores, não utilizou-se *raw string literals* (`R"rawliteral(...)rawliteral`) e *placeholders* (`{{...}}`) e `String.replace()`. O motivo foi por eficiência.
+
+  O método `String.replace()` cria várias cópias intermediárias, o que pode consumir mais RAM e fragmentar a *heap memory* (*memória dinâmica*) no ESP32 se for chamado com frequência. *Heap memory* é uma região da RAM usada para alocações em tempo de execução - ou seja, um espaço para dados cujo tamanho só é conhecido enquanto o programa está rodando.
+
+  Como a função `enviarTelemetria()` pode executar mais de uma ou duas vezes por segundo, optou-se pelo método da concatenação de `string` ao invés de correr o risco de ter muitas alocações extras.
+
+  O método `.textAll()` está na biblioteca `<ESPAsyncWebServer.h>`. Ele envia uma mensagem de texto (`string`) para todos os clientes WebSocket conectados ao servidor naquele momento. O envio é através de uma mensagem JSON.
+
+  ```ino
+  void loop() {
+    unsigned long agora = millis(); // [ms]
   
+    // Verificação do movimento para trás
+    if (movendoTras) {
+      if (agora - tempoInicioTras >= duracaoTras) {
+        girarEsquerda();
+        movendoTras = false;
+        movendoGiro = true;
+        tempoInicioGiro = agora;
+      }
+      yield();
+      return;
+    }
+  
+    // Verificação do movimento de giro
+    if (movendoGiro) {
+      if (agora - tempoInicioGiro >= duracaoGiro) { parar(); movendoGiro = false; }
+      yield();
+      return;
+    }
+  
+    if (modoManual) {
+      yield();
+      return;
+    }
+  
+    if (agora - ultimoMillis >= intervaloLeituras) {
+      ultimoMillis = agora;
+      
+      distancia = medirDistancia(); // [cm]
+  
+      // LM393 - Sensor de velocidade encoder
+      noInterrupts();
+      pulsosA = pulsosMotorA;
+      pulsosB = pulsosMotorB;
+      pulsosMotorA = 0;
+      pulsosMotorB = 0;
+      interrupts();
+  
+      enviarTelemetria();
+      ws.cleanupClients();
+  
+      if (pulsosA > 5 && pulsosB > 5) {
+        if (distancia > DISTANCIA_MINIMA_CM || distancia == -1) {
+          moverFrente();
+        } else {
+          girarDireita();
+        }
+      } else {
+        moverTras();
+        movendoTras = true;
+        tempoInicioTras = agora;
+      }
+    }
+    yield();
+  }
+  ```
+  A função `enviarTelemetria()` foi adicionada ao `void loop()`. O método `cleanupClients()` teve sua posição transferida para logo após a `enviarTelemetria()`.
+
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
