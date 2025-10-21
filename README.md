@@ -1457,8 +1457,7 @@ Nesta versão foram adicionadas funções e trechos de código em funções já 
     ws.textAll(dados);
   }
   ```
-  A função `void enviarTelemetria()` foi criada para comunicar através do protocolo WebSocket os dados da telemetria para exibição na página HTML
-</details>.
+  A função `void enviarTelemetria()` foi criada para comunicar através do protocolo WebSocket os dados da telemetria para exibição na página HTML.
 
   A variável `String dados` contém uma concatenação dos dados. Embora tenha um resultado mais legível para os autores, não utilizou-se *raw string literals* (`R"rawliteral(...)rawliteral`) e *placeholders* (`{{...}}`) e `String.replace()`. O motivo foi por eficiência.
 
@@ -1529,6 +1528,7 @@ Nesta versão foram adicionadas funções e trechos de código em funções já 
   ```
   A função `enviarTelemetria()` foi adicionada ao `void loop()`. O método `cleanupClients()` teve sua posição transferida para logo após a `enviarTelemetria()`.
 
+</details>
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
