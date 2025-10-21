@@ -380,7 +380,9 @@ Nesta versão foi feita a substituição da função `analogWrite()` pelas funç
 
 A função `analogWrite()` é uma função padrão a API Arduino, mas não é nativa na plataforma ESP32. Na ESP32, a função `analogWrite()` é apenas um *wrapper* (camada de compatibilidade) que chama o sistema PWM por hardware (LEDC).
 
-`analogWrite()` funciona, mas é genérico e limitado. Como o B1-M1 tem uma ESP32-CAM com Wi-Fi ativo, é mais robusto usar LEDC configurado manualmente para controlar frequência e resolução, garantindo um sinal PWM estável mesmo durante o streaming de vídeo via Wi-Fi.
+Decidiu-se utilizar o LEDC já que ela é nativa da ESP32 e já familiariza os alunos com as funções.
+
+É possível controlar frequência e resolução com `analogWrite()` através de `analogWriteFrequency()` e `analogWriteResolution()`. Portanto, realmente parece que o uso de `analogWrite()` ou `ledcAttach/Write()` é uma questão de gosto.
 
 <details>
   <summary>📝 Comentários sobre o código versão 2 [clique para expandir]</summary>
