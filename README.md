@@ -1530,6 +1530,113 @@ Nesta versão foram adicionadas funções e trechos de código em funções já 
 
 </details>
 
+---
+
+### 26/10/2025
+
+Nesta versão foi instalado, calibrado e integrado um sensor LSM303DHLC GY511 para a adição de uma bússola digital ao B1-M1.
+
+💾 [Código versão 11]()
+
+🎥 [Vídeo B1-M1 rodando com a versão 11]()
+
+<details>
+  <summary>📝 Comentários sobre o código versão 11 [clique para expandir]</summary>
+
+  Foi instalada a biblioteca `LSM303` da Pololu no ArduinoIDE.
+
+  Foi utilizado [este script](https://gist.github.com/parodrigues-ipynb/99d4b30a8cf4a63b18cbad1b848596ad) para coleta dos dados crus do LSM303. A seguir seguem comentários sobre este script e seu funcionamento.
+
+  ```ino
+  #include <Wire.h>
+  #include <LSM303.h>
+  LSM303 bussola;
+  ```
+  `#include <Wire.h>` habilita a comunicação I²C, que é o protocolo de comunicação serial utilizado pelo LSM303.
+
+  `LSM303 bussola;` cria um objeto que representa o módulo físico do LSM303.
+
+  ```ino
+  Serial.begin(115200);
+  Wire.begin(21, 22); // (SDA, SCL)
+  bussola.init();
+  bussola.enableDefault();
+  delay(200);
+  Serial.println("mx,my,mz,ax,ay,az"); // cabeçalho CSV
+  ```
+  `Wire.begin(21,22);` informa os pinos da ESP32 para SDA (*Serial Data*) e SCL (*Serial Clock*).
+
+  O método `.init()` inicializa a comunicação com os sensores (acelero e magnetômetro). `.enableDefault()` aplica as configurações padrão de ganho e sensibilidade.
+
+  `delay(200)` dá tempo para os sensores estabilizarem após ligados.
+
+  O `.println()` é utilizado para coletar os dados para posterior envio a um documento `.csv`.
+
+  ```ino
+  bussola.read();
+  Serial.print(bussola.m.x); Serial.print(",");
+  Serial.print(bussola.m.y); Serial.print(",");
+  Serial.print(bussola.m.z); Serial.print(",");
+  Serial.print(bussola.a.x); Serial.print(",");
+  Serial.print(bussola.a.y); Serial.print(",");
+  Serial.println(bussola.a.z);
+  delay(40); // ~25 Hz
+  ```
+  O método `.read()` faz a leitura dos dois sensores (acelero e magnetômetro). O valor em cada eixo (`x`, `y` e `z`) é enviado pela comunicação serial I²C, separados por vírgula, conforme padrão do `.csv`.
+
+  O `delay(40)` é utilizado para gerar 25 amostras por segundo ($\frac{1000 ms}{40 ms} = 25 Hz$).
+
+  🎥 [Vídeo da coleta de dados crus dos sensores acelero e magnetômetro](https://imgur.com/a/g4aFAeq)
+
+  Para armazenar os dados, foi instalado o [software PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html), que foi configurado conforme a imagem abaixo. Foi necessário executar o PuTTY como administrador para ter acesso à comunicação serial da porta `COM10`. O path do arquivo escolhido foi `C:\Users\Usuario\Desktop\mag_data.csv`.
+
+  ![Configuração PuTTY](https://i.imgur.com/iNb3KOO.jpeg)
+
+  É importante notar que às vezes o PuTTY gera um cabeçalho com informações além dos dados coletados. Para corrigir isso, basta abrir o arquivo e remover as primeiras linhas até que ele fique semelhante à imagem abaixo.
+
+  ![.csv do PuTTY corrigido](https://i.imgur.com/px6s7yR.jpeg)
+
+  [Este script Python](https://gist.github.com/parodrigues-ipynb/0648d8b6c1c98801b7eef37fe56ecd2d) foi desenvolvido para calibração dos dados coletados pelos sensores magneto e acelerômetro. O script também imprime gráficos para comparação da leitura de dados dos sensores antes e depois da calibração.
+
+ 🎥 [Excelente vídeo que fala sobre a calibração dos dados dos sensores acelero e magnetômetro](https://www.youtube.com/watch?v=MinV5V1ioWg)
+
+ 🎥 [Ótimo vídeo para visualizar a causa das distorções hard-iron e soft-iron](https://www.youtube.com/watch?v=cGI8mrIanpk&t=196s)
+
+  Os dois arquivos foram colocados no desktop, conforme a imagem abaixo.
+
+  ![Arquivos](https://i.imgur.com/GnDEfEX.jpeg)
+
+  O Windows PowerShell foi aberto no Desktop e o script Python foi executado com a linha de comando `python calib_lsm303.py mag_data.csv`, conforme a caixa amarela na imagem abaixo. O script retornou os valores de offset e scale para calibração dos sensores, assim como criou uma pasta contendo as imagens dos gráficos dos dados antes e depois da calibração, conforme a caixa laranja na mesma imagem.
+
+  ![Execução do script Python](https://i.imgur.com/pGMKVM1.jpeg)
+
+  A imagem abaixo apresenta os gráficos obtidos com a análise dos dados do .csv.
+
+  ![Gráficos](https://i.imgur.com/TcS6qUt.jpeg)
+
+  🎥 [Vídeo comparando os gráficos tridimensionalmente](https://imgur.com/a/l8q1bQo)
+
+  Após a calibração, observou-se que a versão calibrada continuava elipsoidal nos planos x, y e x, z. Portanto, repetiu-se a coleta de dados, dessa vez mantendo o sensor "fixo" em um ponto imaginário no espaço e realizando os movimentos de giro em torno deste ponto.
+
+  🎥 [Vídeo deixando explícita a elípse](https://imgur.com/a/g36Z5aA)
+
+  Na segunda coleta houve o mesmo padrão nos gráficos.
+
+  🎥 [Vídeo mostrando que a segunda coleta teve uma distribuição tridimensional muito similar à primeira coleta](https://imgur.com/a/6rFnmWl)
+
+  Como a anomalia elipsoidal está associada a efeitos de soft-iron, aumentou-se o comprimento dos cabos de alimentação e comunicação do LSM303 e repetiu-se a coleta de dados em outro cômodo da casa, a fim de escapar da interferência de qualquer material ferromagnético no entorno.
+
+  ![Cabos mais longos](i.imgur.com/a3KBwhe.jpeg)
+
+  Porém, infelizmente, o mesmo padrão de anomalia elipsoidal permaneceu nos dados.
+
+  🎥 [Vídeo mostrando a permanência da elípse](https://imgur.com/a/dCjrSm4)
+
+  Com isso, os alunos acreditam que o problema esteja no próprio sensor, e decidiram continuar o projeto levando em conta esse viés (*bias*) nos planos xy e xz.
+
+</details>
+
+
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
 [^2]: O [datasheet consultado](https://www.handsontec.com/dataspecs/module/ESP32-CAM.pdf) apresenta valores em torno de 200mA para câmera ligada/flash desligado e 300mA para câmera ligada/flash ligado. Os valores podem aumentar em caso de streaming por Wi-Fi. Adotou-se o valor médio.
