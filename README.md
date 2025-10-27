@@ -1628,7 +1628,7 @@ Também foi adotada a arquitetura de transmissão de dados através do protocolo
 
   Como a anomalia elipsoidal está associada a efeitos de soft-iron, aumentou-se o comprimento dos cabos de alimentação e comunicação do LSM303 e repetiu-se a coleta de dados em outro cômodo da casa, a fim de escapar da interferência de qualquer material ferromagnético no entorno.
 
-  ![Cabos mais longos](i.imgur.com/a3KBwhe.jpeg)
+  ![Cabos mais longos](https://i.imgur.com/a3KBwhe.jpeg)
 
   Porém, infelizmente, o mesmo padrão de anomalia elipsoidal permaneceu nos dados.
 
