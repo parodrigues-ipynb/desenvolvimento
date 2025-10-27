@@ -1618,23 +1618,7 @@ Também foi adotada a arquitetura de transmissão de dados através do protocolo
 
   🎥 [Vídeo comparando os gráficos tridimensionalmente](https://imgur.com/a/l8q1bQo)
 
-  Após a calibração, observou-se que a versão calibrada continuava elipsoidal nos planos x, y e x, z. Portanto, repetiu-se a coleta de dados, dessa vez mantendo o sensor "fixo" em um ponto imaginário no espaço e realizando os movimentos de giro em torno deste ponto.
-
-  🎥 [Vídeo deixando explícita a elípse](https://imgur.com/a/g36Z5aA)
-
-  Na segunda coleta houve o mesmo padrão nos gráficos.
-
-  🎥 [Vídeo mostrando que a segunda coleta teve uma distribuição tridimensional muito similar à primeira coleta](https://imgur.com/a/6rFnmWl)
-
-  Como a anomalia elipsoidal está associada a efeitos de soft-iron, aumentou-se o comprimento dos cabos de alimentação e comunicação do LSM303 e repetiu-se a coleta de dados em outro cômodo da casa, a fim de escapar da interferência de qualquer material ferromagnético no entorno.
-
-  ![Cabos mais longos](https://i.imgur.com/a3KBwhe.jpeg)
-
-  Porém, infelizmente, o mesmo padrão de anomalia elipsoidal permaneceu nos dados.
-
-  🎥 [Vídeo mostrando a permanência da elípse](https://imgur.com/a/dCjrSm4)
-
-  Com isso, os alunos acreditam que o problema esteja no próprio sensor, e decidiram continuar o projeto levando em conta esse viés (*bias*) nos planos xy e xz.
+  Após a calibração, observou-se que a versão calibrada estava elipsoidal nos planos x, y e x, z na visualização 3D. Isso se deve à escala distorcida na visualização.
 
 </details>
 
