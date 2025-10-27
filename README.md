@@ -1620,6 +1620,19 @@ Também foi adotada a arquitetura de transmissão de dados através do protocolo
 
   Após a calibração, observou-se que a versão calibrada estava elipsoidal nos planos x, y e x, z na visualização 3D. Isso se deve à escala distorcida na visualização.
 
+  Foi feito o ajuste de escala dos eixos e observado que o formato de esfera foi aproximado.
+
+  🎥 [Vídeo dos dados com a visualização 3D ajustada](https://imgur.com/a/KNgTk9d)
+
+  Os seguintes valores de ajuste pelo método **mínimo/máximo** foram obtidos:
+
+  ```
+  Offset: [ -30.  -307.   222.5]
+  Scale:  [0.99931694 0.93782051 1.07179487]
+  ```
+
+  
+
 </details>
 
 ---
