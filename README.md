@@ -1638,6 +1638,21 @@ Também foi adotada a arquitetura de transmissão de dados através do protocolo
 
 </details>
 
+### 26/10/2025
+
+Nesta versão foi implementado o módulo LSM303DHLC GY511 para servir de bússola digital no B1-M1.
+
+💾 [Código versão 12](https://gist.github.com/parodrigues-ipynb/321e96d45b61859578bc1fb003bc0cd2)
+
+🎥 Não houve necessidade de vídeo nessa versão
+
+<details>
+  <summary>📝 Comentários sobre o código versão 10 [clique para expandir]</summary>
+
+  W.I.P.
+
+</details>
+
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
 
