@@ -1638,6 +1638,8 @@ Também foi adotada a arquitetura de transmissão de dados através do protocolo
 
 </details>
 
+---
+
 ### 26/10/2025
 
 Nesta versão foi implementado o módulo LSM303DHLC GY511 para servir de bússola digital no B1-M1.
