@@ -1536,9 +1536,11 @@ Nesta versão foram adicionadas funções e trechos de código em funções já 
 
 Nesta versão foi instalado, calibrado e integrado um sensor LSM303DHLC GY511 para a adição de uma bússola digital ao B1-M1.
 
-💾 [Código versão 11]()
+Também foi adotada a arquitetura de transmissão de dados através do protocolo MQTT.
 
-🎥 [Vídeo B1-M1 rodando com a versão 11]()
+💾 [Código versão 11](https://gist.github.com/parodrigues-ipynb/699cc992c6e68aecfd2559a6be93e43e)
+
+🎥 Não houve necessidade de vídeo nessa versão
 
 <details>
   <summary>📝 Comentários sobre o código versão 11 [clique para expandir]</summary>
