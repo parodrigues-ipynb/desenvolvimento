@@ -1645,12 +1645,26 @@ Nesta versão foi implementado o módulo LSM303DHLC GY511 para servir de bússol
 
 🎥 Não houve necessidade de vídeo nessa versão
 
-<details>
-  <summary>📝 Comentários sobre o código versão 10 [clique para expandir]</summary>
+---
 
-  W.I.P.
+## 03/11/2025
 
-</details>
+Entre a última atualização e esta o código do B1-M1 passou por uma série de revisões estruturais e melhorias funcionais.
+
+Os alunos são programadores iniciantes. Conceitos de orientação a objetos ainda são novidade para eles. Portanto, grande parte do código anterior tinha uma mentalidade muito procedural e alto acoplamento entre os módulos.
+
+Nesta versão buscou-se introduzir gradualmente conceitos de orientação a objetos, empregando classes, structs, enums... para tornar a organização mais modular, legível e escalável.
+
+O resultado desse esforço é o código da versão atual publicada no dia 03/11/2025, que é um código ainda muito procedural, porém mais fácil de manter e escalar.
+
+Foi ainda implementada uma lógica para a correção de rumo do B1-M1 durante o modo automático.
+
+💾 [Código versão 13](https://gist.github.com/parodrigues-ipynb/a0c93b38437dd8e8e3ded7a6a895dd25)
+
+🎥 [Vídeo do B1-M1 rodando com a versão 13, porém sem correção de rumo](https://imgur.com/a/9cssGHi)
+
+🎥 [Vídeo do B1-M1 rodando com a versão 13 com a correção de rumo](https://imgur.com/a/IxcpZUW)
+
 
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
