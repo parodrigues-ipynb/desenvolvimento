@@ -1647,7 +1647,7 @@ Nesta versão foi implementado o módulo LSM303DHLC GY511 para servir de bússol
 
 ---
 
-## 03/11/2025
+### 03/11/2025
 
 Entre a última atualização e esta o código do B1-M1 passou por uma série de revisões estruturais e melhorias funcionais.
 
@@ -1665,6 +1665,112 @@ Foi ainda implementada uma lógica para a correção de rumo do B1-M1 durante o 
 
 🎥 [Vídeo do B1-M1 rodando com a versão 13 com a correção de rumo](https://imgur.com/a/IxcpZUW)
 
+---
+
+### 05/11/2025
+
+<details>
+  <summary>Anotações</summary>
+
+  #### O que é Flask?
+
+  O Render executa aplicações **Flask** (que é escrito na linguagem Python) como web services HTTPS.
+
+  **Flask** é um microframework de desenvolvimento web feito em Python. Um framework é um conjunto de bibliotecas, funções e convenções que facilitam o desenvolvimento de um tipo de software. O Flask foi criado para ser mínimo e flexível. Ele nos dá:
+
+  * um servidor web básico para escutar requisições HTTP;
+  * um roteador de URLs para definir `/decidir`, `/foto`, etc...;
+  * uma forma simples de responder em HTML ou JSON.
+
+  Se nós quisermos banco de dados, autenticação, interface ou API complexa, nós devemos adicionar manualmente as bibliotecas.
+  
+  Servidores HTTP são programas que "escutam" pedidos vindos pela internet e respondem com dados (como páginas, arquivos ou JSONs). Por exemplo, quando nós acessamos `https://b1m1-server.onrender.com/decidir`, o Flask é quem recebe o pedido e decide o que responder.
+
+  Uma aplicação Flask, portanto, é um programa em Python que escuta pedidos na internet e devolve respostas.
+
+  Um web service é um serviço acessível via HTTP ou HTTPS que troca dados estruturados (geralmente JSON ou XML) em vez de páginas HTML. Por exemplo, a ESP32 pode mandar um HTTP POST com os sensores. O servidor (nosso Flask no Render) processa e responde com outro JSON ("virar_direita", "avançar", etc...).
+
+  Esse modelo de receber requisições HTTP e responder com dados estruturados é chamado de **API REST** (ou RESTful API) - padrão moderno para comunicação entre dispositivos e servidores.
+
+  Portanto, se adicionarmos a rota `https://b1m1-server.onrender.com/decidir` no nosso `server.py`, a ESP32 poderá enviar requisições HTTP diretamente utilizando:
+
+  ```ino
+  http.begin("https://b1m1-server.onrender.com/decidir");
+  ```
+
+  O Flask no Render precisa:
+
+  * aceitar requisições POST em `/decidir`;
+  * ler o JSON enviado pelo robô;
+  * decidir uma ação;
+  * retornar o JSON da ação.
+
+  O código do `server.py` atual do B1-M1 é este:
+
+  ```python
+  from flask import Flask, send_from_directory
+  
+  app = Flask(__name__, static_folder="static")
+  
+  @app.route("/")
+  def index():
+      return send_from_directory("static", "index.html")
+  
+  if __name__ == "__main__":
+      app.run(host="0.0.0.0", port=10000)
+      # Teste
+  ```
+
+  A linha `app = Flask(__name__, static_folder="static")` cria a aplicação Flask e define a pasta `"static"`, que é onde ficam os arquivos da interface web (`index.html`).
+
+  Quando alguém acessa a rota padrão (`@app.rout("/")`), o Flask devolve o arquivo `static/index.html`. Isso é comportamento típico de um site estático, não de uma API REST.
+
+  `if __name__ == "__main__": app.run(host="0.0.0.0", port=10000)` faz o servidor rodar locamente (ou no Render, se configurado).
+
+  #### Melhorando o Flask para atuar como API REST
+  
+  O `server.py` do B1-M1 foi modificado da seguinte forma:
+
+  ```python
+  from flask import Flask, request, jsonify, send_from_directory
+
+  app = Flask(__name__, static_folder="static")
+  
+  @app.route("/")
+  def index():
+      return send_from_directory("static", "index.html")
+  
+  # Começo da adição
+  @app.route("/decidir", methods=["POST"])
+  def decidir():
+      dados = request.get_json()  # recebe o JSON do B1-M1
+      print("Recebido:", dados)   # aparece no log do Render
+  
+      # Simula uma decisão simples
+      resposta = {"acao": "avancar", "descricao": "Frente livre, siga em frente."}
+      return jsonify(resposta)
+  # Fim da adição
+
+  if __name__ == "__main__":
+      app.run(host="0.0.0.0", port=10000)
+  ```
+  Agora o Flask faz duas coisas ao mesmo tempo:
+  * continua servindo a página `index.html` (site estático);
+  * também atua como API REST com o endpoint `POST http://b1m1-server.onrender.com/decidir`.
+
+  | Função         | Rota Flask                                  | Função da rota                 | Endpoint completo                               |
+  |----------------|---------------------------------------------|--------------------------------|-------------------------------------------------|
+  | Página inicial | `@app.route("/")                            | Mostra `index.html`            | `GET https:b1m1-server.onrender.com/`           |
+  | API de decisão | `@app.route("/decidir"), methods=["POST"])` | Recebe sensores e devolve ação | `POST https://b1m1-server.onrender.com/decidir` |
+
+  Após deploy do `server.py`  no Render, foi enviada a seguinte linha de comando no CMD: `curl -X POST https://b1m1-server.onrender.com/decidir -H "Content-Type: application/json" -d "{\"robot_id\":\"B1M1\"}"`
+  
+  A resposta obtida, como esperado, foi `{"acao":"avancar","descricao":"Frente livre, siga em frente."}`
+
+  
+  
+  
+</details>
 
 
 [^1]: O [datasheet da Espressif](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) apresenta diferentes consumos para situações de transmissão ou recepção de Wi-Fi/Bluetooth, light-sleep, deep-sleep... Esses valores podem ser consultados nas tabelas *Table 4-2. Power Consumption by Power Modes* na **página 30** e *Table 5-4. Current Consumption Depending on RF Modes* na **página 53**. Em função dos diversos possíveis valores de corrente para cada modo de funcionamento, adotou-se o pior caso (maior consumo de ~250mA com transmissão Wi-Fi 802.11b ativa).
